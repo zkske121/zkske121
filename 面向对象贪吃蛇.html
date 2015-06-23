@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>snake</title>
+    <style type="text/css">
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        height: 25px;
+    }
+    
+    li {
+        width: 20px;
+        height: 20px;
+        float: left;
+        border: 1px solid #ccc;
+        margin: 1px;
+    }
+    
+    li.on {
+        background-color: red;
+    }
+    
+    li.head {
+        border: 1px dashed #FF7F00;
+    }
+    </style>
+</head>
+
+<body>
+    <script type="text/javascript">
+    function Snake(width, height) {
+        this.width = width;
+        this.height = height;
+        this.body = [];
+        this.orient = 1;
+        this.container = null;
+        this.timer = null;
+        this.speed = 300;
+        this.list = null;
+        this.count = width * height;
+    }
+
+    Snake.prototype = {
+        constructor: Snake,
+        init: function() {
+            var div = this.container = document.createElement('div');
+            ul = document.createElement('ul'),
+                li = document.createElement('li'),
+                rows = this.width,
+                cols = this.height;
+
+            while (rows-- > 0) {
+                ul.appendChild(li.cloneNode());
+            }
+
+            while (cols-- > 0) {
+                div.appendChild(ul.cloneNode(true));
+            }
+
+            document.getElementsByTagName('body')[0].appendChild(div);
+
+            this.list = document.getElementsByTagName('li');
+
+            [].forEach.call(this.list, function(item, i) {
+                item.id = 'li_' + (i + 1);
+            });
+
+            this.body.push(this.random());
+            return this;
+        },
+        random: function() {
+
+            if (this.count == this.body.length) {
+                return null;
+            }
+
+            var num, item;
+
+            do {
+                num = Math.floor((this.count - 1) * Math.random()) + 1;
+                item = document.getElementById('li_' + num);
+            } while (this.body.indexOf(item) > -1);
+
+            this.chioce(item);
+            return item;
+        },
+        getEle: function(item) {
+            var num = item.id.split('_').pop() - 0;
+
+            switch (this.orient) {
+                case 1:
+                    num--;
+                    num = num % this.width == 0 ? num + this.width : num;
+                    break;
+                case 2:
+                    num = num % this.width == 0 ? num - this.width + 1 : num + 1;
+                    break;
+                case 3:
+                    num = num / this.width <= 1 ? this.count - this.width + num : num - this.width;
+                    break;
+                case 4:
+                    num = num + this.width;
+                    num = num > this.count ? num - this.count : num;
+                    break;
+            }
+
+            return document.getElementById('li_' + num);
+        },
+        move: function() {
+            var next = this.getEle(this.body[0]);
+
+            if (this.body.indexOf(next) > -1) {
+                alert('game over!');
+                clearInterval(this.timer);
+            } else {
+                this.body.unshift(next);
+                if (!next.className.length) {
+                    this.chioce(this.body[0]);
+                    this.unchioce(this.body.pop());
+                } else {
+                    this.random();
+                }
+            }
+        },
+        chioce: function(item) {
+            item.className = 'on';
+        },
+        unchioce: function(item) {
+            item.className = '';
+        },
+        start: function() {
+            this.random();
+            this.timer = setInterval(this.move.bind(this), this.speed);
+
+            return this;
+        }
+    }
+
+    window.onload = function() {
+        var snake = new Snake(10, 10).init().start();
+
+        document.onkeydown = function(e) {
+            var num = e.which;
+            if (num <= 40 && num >= 37) {
+                switch (num) {
+                    case 37:
+                        if (snake.orient != 2) {
+                            snake.orient = 1;
+                        }
+                        break;
+                    case 38:
+                        if (snake.orient != 4){
+                        	snake.orient = 3;
+                        }
+                        
+                        break;
+                    case 39:
+                        if (snake.orient != 1){
+                        	snake.orient = 2;
+                        }
+                        break;
+                    case 40:
+                        if (snake.orient != 3){
+                        	snake.orient = 4;
+                        }
+                        break;
+                }
+                e.preventDefault();
+            }
+        }
+    }
+    </script>
+</body>
+
+</html>
