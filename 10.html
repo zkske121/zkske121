@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style type="text/css">
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .clear {
+        clear: both;
+    }
+    
+    .floor {
+        list-style: none;
+        width: 570px;
+        padding-top: 10px;
+        margin-top: 20px;
+        margin-left: 240px;
+        position: relative;
+        border: 1px solid gray;
+    }
+    
+    ul.current {
+        border: 1px solid red;
+    }
+    
+    li {
+        float: left;
+        width: 100px;
+        height: 100px;
+        margin-left: 10px;
+        margin-bottom: 10px;
+        border: 1px solid gray;
+    }
+    
+    .item,
+    .add {
+        position: absolute;
+        background: red;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+    
+    .type_a {
+        width: 100px;
+        height: 100px;
+        top: 10px;
+        left: 10px;
+    }
+    
+    .type_b {
+        width: 100px;
+        height: 210px;
+        top: 120px;
+        left: 10px;
+    }
+    
+    .type_c {
+        width: 210px;
+        height: 210px;
+        top: 340px;
+        left: 10px;
+    }
+    </style>
+</head>
+
+<body>
+    <ul id="floor1" class="floor">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <div class="clear"></div>
+    </ul>
+    <br />
+    <br />
+    <br />
+    <ul id="floor2" class="floor">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <div class="clear"></div>
+    </ul>
+    <div class="type_a add" data-type="1"></div>
+    <div class="type_b add" data-type="2"></div>
+    <div class="type_c add" data-type="4"></div>
+    <script type="text/javascript" src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    function Draw(container, width, height) {
+        this.container = container;
+        this.list = this.initList();
+        this.models = [];
+        this.width = width;
+        this.height = height;
+
+        console.log(this);
+    }
+
+    Draw.prototype = {
+        constructor: Draw,
+        addModel: function(model) {
+            var place = this.lastPlace(),
+                type = model.data('type');
+
+            if (!place) {
+                alert('楼层元素已满!');
+                return;
+            }
+
+            if (!this.detect(place.index, type)) {
+                return;
+            }
+
+            model = model.clone()
+            	    .removeClass('add')
+            	    .addClass('item')
+            	    .appendTo(this.container)
+            	    .text(this.models.length);
+
+            if (type == 1) {
+            	model.css({
+            	        left: place.left,
+            	        top: place.top
+            	    });
+
+            	place.content = model;
+            	place.type = type;
+            	this.models.push(model);
+            } else {
+                for (var i = 0; i < type; i++) {
+                    if (i == 0) {
+                        model.css({
+                                left: place.left,
+                                top: place.top
+                            });
+                    } else {
+                    	place.head = false;
+                    }
+
+                    place.content = model;
+                    place.type = type;
+                    place = this.list[place.index + 1];
+                }
+
+                this.models.push(model);
+            }
+
+        },
+        move: function(model, b_left, b_top, t_left, t_top) {
+
+            var target = this.targetPlace(t_left, t_top),
+            	current = this.currentPlace(b_left, b_top),
+            	flag = true;
+
+            if (!target || target === current) {
+                flag = false;
+            }
+
+            /*if(current.type == 1 && current.type < target.type ) {
+        	    alert('1格元素不能替换多格元素!');
+        	    flag = false;
+            }
+
+            if(target.index % 2 == 1 && current.type > 1) {
+            	flag = false;
+            }
+
+            if(current.index < target.index && target.type == 1 && current.type > 1) {
+            	target = this.list[target.index + 1];
+            }*/
+
+            if(!flag) {
+        		model.css({
+        	        left: b_left,
+        	        top: b_top
+        	    });
+            	return;
+            }
+
+            var b_index = this.models.indexOf(current.content);
+            var t_index = this.models.indexOf(target.content);
+
+            var tmp = this.models.splice(b_index, 1)[0];
+
+            if (b_index == 0) {
+                t_index < 0 ? this.models.push(tmp) : this.models.splice(t_index, 0, tmp);
+            } else if (b_index > 0) {
+                if (t_index < 0) {
+                    this.models.push(tmp);
+                } else if (t_index == 0) {
+                    this.models.unshift(tmp)
+                } else {
+                    this.models.splice(t_index, 0, tmp);
+                }
+            }
+
+            this.resetPlace();
+            
+            if(!this.detectPlace()) {
+        		model.css({
+        	        left: b_left,
+        	        top: b_top
+        	    });
+        	    return;
+            }
+
+            this.arrange();
+        },
+        initList: function() {
+            var ret = [],
+                list = this.container.find('li'),
+                item,
+                len = list.length / 2,
+                i = 0,
+                j = i + 5
+            k = 0;
+
+            for (; i < len; i++, j++) {
+                ret.push({
+                    index: k++,
+                    left: list[i].offsetLeft,
+                    top: list[i].offsetTop,
+                    head: true,
+                    type: 0,
+                    content: null
+                });
+
+                ret.push({
+                    index: k++,
+                    left: list[j].offsetLeft,
+                    top: list[j].offsetTop,
+                    head: true,
+                    type: 0,
+                    content: null
+                });
+            }
+
+            return ret;
+        },
+        lastPlace: function() {
+            var tmp, i = 0,
+                len = this.list.length;
+
+            for (; i < len; i++) {
+                tmp = this.list[i];
+                if (!tmp.content) {
+                    return tmp;
+                }
+            }
+
+            return null;
+        },
+        targetPlace: function(left, top) {
+            var tmp, i = 0,
+                len = this.list.length;
+
+            for (; i < len; i++) {
+                tmp = this.list[i];
+                if ((tmp.left <= left && left <= tmp.left + this.width) && (tmp.top <= top && top <= tmp.top + this.height)) {
+                    return tmp;
+                }
+            }
+
+            return null;
+        },
+        currentPlace: function(left, top) {
+            var tmp, i = 0,
+                len = this.list.length;
+
+            for (; i < len; i++) {
+                tmp = this.list[i];
+                if (tmp.left === left && tmp.top === top) {
+                    return tmp;
+                }
+            }
+
+            return null;
+        },
+        resetPlace: function() {
+            var place,item,i = 0, j = 0, type;
+
+            for(; i < this.models.length; i++) {
+            	item = this.models[i];
+            	type = parseInt(item.data('type'));
+
+        		for(var count = 0; count < type; count++) {
+        			place = this.list[j++];
+        			if(count != 0) {
+        				place.head = false;
+        			} else {
+        				place.head = true;
+        			}
+        			place.content = item;
+        			place.type = type;
+        		}
+            }
+        },
+        //检测格子位置是否正确
+        detect: function(index, type) {
+            var flag = true;
+            switch (type) {
+                case 1:
+                    break;
+                case 2:
+                    if (index % 2 == 1) {
+                        alert('此处不能添加2格内容!');
+                        flag = false;
+                    }
+                    break;
+                case 4:
+                    if (index % 2 == 1) {
+                        alert('此处不能添加4格内容!');
+                        flag = false;
+                    }
+                    if (index == 8) {
+                        alert('此处不能添加4格内容!');
+                        flag = false;
+                    }
+                    break;
+            }
+            return flag;
+        },
+        arrange: function() {
+        	var i, place;
+        	for(i = 0; i < this.list.length; i++) {
+        		place = this.list[i];
+        		place.head && $(place.content).css({
+        			left: place.left,
+        			top: place.top
+        		});
+        	}
+        },
+        detectPlace: function() {
+        	var i, place;
+        	for(i = 0; i < this.list.length; i++) {
+        		place = this.list[i];
+        		if(place.type > 1 && place.head && place.index % 2 ==1) {
+        			return false;
+        		}
+        	}
+        	return true;
+        }
+    }
+
+    $(function() {
+
+        //楼层选择
+        $(document).on('click', '.floor', function(e) {
+            var $this = $(this);
+
+            //楼层选中样式
+            if (!$this.hasClass('current')) {
+                $('ul.floor').removeClass('current');
+                $this.addClass('current');
+            }
+
+            //楼层绑定draw对象
+            !$this.data('draw') && $this.data('draw', new Draw($this, 100, 100));
+
+        });
+
+        //模块添加
+        $(document).on('click', '.add', function() {
+            var curr = $('ul.current');
+
+            curr.length && curr.data('draw').addModel($(this));
+        });
+
+        //拖拽
+        $(document).on('mousedown', 'ul.current .item', function(e) {
+            var $that = $(this),
+                $floor = $that.parents('ul.current'),
+                draw = $floor.data('draw'),
+                begin_left = $that[0].offsetLeft,
+                begin_top = $that[0].offsetTop,
+                abs_x = e.pageX - begin_left,
+                abs_y = e.pageY - begin_top,
+                isMove = true;
+
+            $(document).mousemove(function(e) {
+                isMove && $that.css({
+                    'left': e.pageX - abs_x,
+                    'top': e.pageY - abs_y,
+                    'z-index': -1
+                });
+            }).mouseup(function(e) {
+                //拖拽结束
+                isMove = false;
+                //清除事件
+                $(document).off('mousemove mouseup');
+
+                draw.move($that, begin_left, begin_top, e.pageX - abs_x, e.pageY - abs_y);
+
+                $that.css({
+                    'z-index': 0
+                });
+
+                return false;
+            });
+            return false;
+
+        });
+
+    });
+    </script>
+</body>
+
+</html>
