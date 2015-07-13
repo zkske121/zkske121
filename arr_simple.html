@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>多维数组转一维</title>
+</head>
+
+<body>
+    <script type="text/javascript">
+    /*var arr = [1, {a:'a'}, 3, [4, 5, [6, 7], 8], 9];
+
+    console.log(arr.toString().split(','));
+
+    var ret = arr.reduce(function(prev, next) {
+        function toArr(arr) {
+            arr.forEach(function(item) {
+                item instanceof Array ? toArr(item) : prev.push(item);
+            });
+        }
+            return (next instanceof Array ? toArr(next) : prev.push(next), prev);
+    }, []);
+
+    console.log(ret);*/
+
+    /*var a = [1,2,3,[4,5,[6,7],8],9];
+    var result = [];
+    var i,tmp;
+
+    while (!!a[0]) {
+      tmp = a.pop();
+      if (tmp instanceof Array) {
+        for (i = 0;i < tmp.length; i++) {
+          a.push(tmp[i]);
+        }
+      } else {
+        result.push(tmp);
+      }
+    }
+    result.reverse();
+    console.log(result);*/
+
+    var arr = [1,[2,3,[4,5,6],7],8,9];
+    console.log(arr);
+    var ret = [];
+     while(arr.length){
+        tmp = arr.pop();
+        tmp instanceof Array ? arr = arr.concat(tmp) : ret.unshift(tmp);
+     }
+
+     console.log(ret);
+    </script>
+    <script type="text/javascript" src="showcode.js"></script>
+</body>
+
+</html>
