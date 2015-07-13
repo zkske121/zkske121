@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>邮箱字符串去重</title>
+</head>
+
+<body>
+    <script type="text/javascript">
+    /**
+     * 示例请看控制台
+     * 字符串邮箱去重
+     * @type {String}
+     */
+    var str = 'a@163.comb@qq.comc@amazon.com.cna@163.comb@qq.comc@amazon.com.cna@163.comb@qq.comc@amazon.com.cn';
+    var ret = '';
+    str.replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|cn)/g, function(item) {
+        if (ret.indexOf(item) < 0) {
+            ret += item;
+        }
+    });
+    console.log(ret);
+    </script>
+    <script type="text/javascript">
+    /**
+     * 数组去重
+     * @type {String}
+     */
+    /*var str = 'a@163.comb@qq.comc@amazon.com.cna@163.comb@qq.comc@amazon.com.cna@163.comb@qq.comc@amazon.com.cn';
+    var arr = str.split('');
+    var reg = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|cn)/g;
+
+    var i = 0,
+        tmp, index;
+
+    while (i < arr.length) {
+        tmp = arr[i];
+        index = arr.indexOf(tmp, i + 1);
+        if (index < 0) {
+            i++;
+        } else {
+            arr.splice(index, 1);
+        }
+    }
+
+    console.log(arr);*/
+    </script>
+    <script type="text/javascript" src="showcode.js"></script>
+</body>
+
+</html>

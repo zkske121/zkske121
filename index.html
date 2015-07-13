@@ -2,10 +2,58 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Document</title>
+	<title>zenki js代码展示</title>
+	<style type="text/css">
+	* {
+		margin: 0;
+		padding: 0;
+	}
+	.bg {
+		position: fixed;
+		top:50%;
+		left:50%;
+	}
+	.clear {
+		clear: both;
+	}
+	.container {
+		float: left;
+	}
+	a {
+		float: left;
+		display: block;
+		clear: both;
+	}
+	</style>
 </head>
 <body>
-	<a href="./面向对象贪吃蛇.html">面向对象贪吃蛇</a>
-	<a href="./z_lazyload.html">策略模式图片懒加载</a>
+	<div class="bg">
+		<div class="container">
+			<a href="./snake.html">面向对象贪吃蛇</a>
+			<a href="./z_lazyload.html">策略模式图片懒加载</a>
+			<a href="./floor.html">自定义模块组装</a>
+			<a href="./async_loadjs.html">异步加载埋点js代码</a>
+			<a href="./arr_norepeat.html">邮箱去重</a>
+			<a href="./calc.html">利用堆栈实现四则运算</a>
+			<a href="./clock.html">面向对象时钟</a>
+			<a href="./fobinacci.html">可扩展的斐波那契数列</a>
+			<a href="./money_convert.html">数子金额转换为大写金额</a>
+			<a href="./password_test.html">六位密码验证</a>
+			<a href="./tab.html">AOP实现选项卡</a>
+			<a href="./tiger_game.html">老虎机小游戏</a>
+			<a href="./loop_queue.html">回环队列实现</a>
+			<a href="http://www.feiniu.com/qqwallet">无限循环轮播</a>
+			<a href="./sea_dot/index.html">seajs+doTjs实现楼层按需加载</a>
+			<div class="clear"></div>
+		</div>
+	</div>
+	<script type="text/javascript">
+	window.onload = function() {
+		var container = document.getElementsByClassName('container')[0];
+		console.log(container.offsetHeight);
+		container.style.marginLeft = - container.offsetWidth / 2 + 'px';
+		container.style.marginTop = - container.offsetHeight / 2 + 'px';
+	}
+	</script>
 </body>
 </html>

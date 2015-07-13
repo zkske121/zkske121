@@ -1,0 +1,35 @@
+.container {
+	width: 820px;
+	height: 420px;
+	border:1px solid #ccc;
+	margin:50px auto;
+	position: relative;
+	background: url('../image/loading.gif') center center no-repeat;
+}
+.container nav {
+	width: 780px;
+	height: 50px;
+	margin: 10px auto;
+	background-color: red;
+}
+.container nav .nav_a {
+	color: #fff;
+	line-height: 50px;
+	width: 100px;
+	height: 50px;
+	display: inline-block;
+	margin: 0 20px;
+	text-align: center;
+}
+.container nav .nav_a:hover {
+	text-decoration: none;
+}
+.container ul {
+	padding: 10px;
+	width: 880px;
+	position: absolute;
+}
+.container ul li {
+	float: left;
+	padding: 10px;
+}
