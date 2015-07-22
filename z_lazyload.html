@@ -266,7 +266,7 @@
             </li>
         </ul>
     </div>
-    <script type="text/javascript" src="http://libs.baidu.com/jquery/1.10.1/jquery.js"></script>
+    <script type="text/javascript" src="http://libs.baidu.com/jquery/1.11.1/jquery.js"></script>
     <script type="text/javascript">
     /**
      * 策略模式图片懒加载
@@ -349,7 +349,7 @@
             });
 
             function scrollLoadImg() {
-                timer && clearTimeout();
+                timer && clearTimeout(timer);
                 timer = setTimeout(z_lazyload.check.bind(null, 'scroll'), 200);
             }
 

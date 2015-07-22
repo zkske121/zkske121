@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>zenki js代码展示</title>
+	<style type="text/css">
+	* {
+		margin: 0;
+		padding: 0;
+	}
+	.bg {
+		position: fixed;
+		top:50%;
+		left:50%;
+	}
+	.clear {
+		clear: both;
+	}
+	.container {
+		float: left;
+		padding: 20px;
+		border: 1px solid gray;
+		border-radius:10px;
+	}
+	.container a {
+		float: left;
+		clear: both;
+		padding: 5px;
+	}
+	a:hover{ text-decoration:none; color:gray;}
+	a:link{ text-decoration:none; color:#333}
+	a:active{ text-decoration:none; color:#333}
+	a:visited{ text-decoration:none; color:#333}
+	</style>
+</head>
+<body>
+	<div class="bg">
+		<div class="container">
+			<a target="_blank" href="./snake.html">面向对象贪吃蛇</a>
+			<a target="_blank" href="./z_lazyload.html">策略模式图片懒加载</a>
+			<a target="_blank" href="./floor.html">自定义模块组装</a>
+			<a target="_blank" href="./async_loadjs.html">异步加载埋点js代码</a>
+			<a target="_blank" href="./arr_norepeat.html">邮箱去重</a>
+			<a target="_blank" href="./calc.html">利用堆栈实现四则运算</a>
+			<a target="_blank" href="./clock.html">面向对象时钟</a>
+			<a target="_blank" href="./fobinacci.html">可扩展的斐波那契数列</a>
+			<a target="_blank" href="./money_convert.html">数子金额转换为大写金额</a>
+			<a target="_blank" href="./password_test.html">六位密码验证</a>
+			<a target="_blank" href="./tab.html">AOP实现选项卡</a>
+			<a target="_blank" href="./tiger_game.html">老虎机小游戏</a>
+			<a target="_blank" href="./loop_queue.html">回环队列实现</a>
+			<a target="_blank" href="./arr_simple.html">多维数组转一维</a>
+			<a target="_blank" href="http://www.feiniu.com/qqwallet">无限循环轮播</a>
+			<a target="_blank" href="./sea_dot/index.html">seajs+doTjs实现楼层按需加载</a>
+			<a target="_blank" href="./fnargs.html">获取func的形参</a>
+			<div class="clear"></div>
+		</div>
+	</div>
+	<script type="text/javascript">
+	window.onload = function() {
+		var container = document.getElementsByClassName('container')[0];
+		console.log(container.offsetHeight);
+		container.style.marginLeft = - container.offsetWidth / 2 + 'px';
+		container.style.marginTop = - container.offsetHeight / 2 + 'px';
+	}
+	</script>
+</body>
+</html>

@@ -2,66 +2,187 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>zenki js代码展示</title>
+	<title>Document</title>
 	<style type="text/css">
 	* {
 		margin: 0;
 		padding: 0;
 	}
-	.bg {
+	body {
+		overflow: hidden;
+		cursor: default;
+		padding-left: 10px;
+	}
+	iframe {
+		border: 0;
+	}
+	ul {
+		list-style: none;
+	}
+
+	#menu {
 		position: fixed;
-		top:50%;
-		left:50%;
-	}
-	.clear {
-		clear: both;
-	}
-	.container {
-		float: left;
+		left: 0;
+		top:0;
+		height: 100%;
+		width: 180px;
+		border-right: 10px solid #cb0a56;
+		background: #000 url(http://www.miaov.com/2013/miaovideo/img/bg.png);
+		color: #777;
+		font-size: 12px;
+		font-family: arial;
 		padding: 20px;
-		border: 1px solid gray;
-		border-radius:10px;
+		margin-left: -220px;
 	}
-	.container a {
+	#menu li {
+		cursor: pointer;
 		float: left;
-		clear: both;
-		padding: 5px;
+		clear: left;
+		padding: 5px 0;
 	}
-	a:hover{ text-decoration:none; color:gray;}
-	a:link{ text-decoration:none; color:#333}
-	a:active{ text-decoration:none; color:#333}
-	a:visited{ text-decoration:none; color:#333}
+	#menu li:hover {
+		color: #fff;
+	}
+	#menu_hider {
+	width: 20px;
+	height: 30px;
+	background: #cc0a57 url(http://www.miaov.com/2013/miaovideo/img/menu_hider_bg.png) no-repeat center;
+	position: fixed;
+	top: 80px;
+	left: 0;
+	filter: alpha(opacity=100);
+	opacity: 1;
+	cursor: pointer;
+	}
 	</style>
+
 </head>
 <body>
-	<div class="bg">
-		<div class="container">
-			<a target="_blank" href="./snake.html">面向对象贪吃蛇</a>
-			<a target="_blank" href="./z_lazyload.html">策略模式图片懒加载</a>
-			<a target="_blank" href="./floor.html">自定义模块组装</a>
-			<a target="_blank" href="./async_loadjs.html">异步加载埋点js代码</a>
-			<a target="_blank" href="./arr_norepeat.html">邮箱去重</a>
-			<a target="_blank" href="./calc.html">利用堆栈实现四则运算</a>
-			<a target="_blank" href="./clock.html">面向对象时钟</a>
-			<a target="_blank" href="./fobinacci.html">可扩展的斐波那契数列</a>
-			<a target="_blank" href="./money_convert.html">数子金额转换为大写金额</a>
-			<a target="_blank" href="./password_test.html">六位密码验证</a>
-			<a target="_blank" href="./tab.html">AOP实现选项卡</a>
-			<a target="_blank" href="./tiger_game.html">老虎机小游戏</a>
-			<a target="_blank" href="./loop_queue.html">回环队列实现</a>
-			<a target="_blank" href="./arr_simple.html">多维数组转一维</a>
-			<a target="_blank" href="http://www.feiniu.com/qqwallet">无限循环轮播</a>
-			<a target="_blank" href="./sea_dot/index.html">seajs+doTjs实现楼层按需加载</a>
-			<div class="clear"></div>
-		</div>
-	</div>
+	<ul id="menu">
+	</ul>
+	<span id="menu_hider"></span>
+	<iframe src="http://zkske121.github.io/snake.html" id="container"></iframe>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
 	<script type="text/javascript">
-	window.onload = function() {
-		var container = document.getElementsByClassName('container')[0];
-		console.log(container.offsetHeight);
-		container.style.marginLeft = - container.offsetWidth / 2 + 'px';
-		container.style.marginTop = - container.offsetHeight / 2 + 'px';
-	}
+	$(function() {
+		var $container = $('#container'),
+			$menu = $('#menu'),
+			$menu_hider = $('#menu_hider'),
+			$doc = $(document),
+			menu_config = [{
+				id: 0,
+				title: '面向对象贪吃蛇',
+				href: './snake.html',
+			},{
+				id: 1,
+				title: '策略模式图片懒加载',
+				href: './z_lazyload.html',
+			},{
+				id: 2,
+				title: '自定义模块组装',
+				href: './floor.html',
+			},{
+				id: 3,
+				title: '异步加载埋点js代码',
+				href: './async_loadjs.html',
+			},{
+				id: 4,
+				title: '邮箱去重',
+				href: './arr_norepeat.html',
+			},{
+				id: 5,
+				title: '利用堆栈实现四则运算',
+				href: './calc.html',
+			},{
+				id: 6,
+				title: '面向对象时钟',
+				href: './clock.html',
+			},{
+				id: 7,
+				title: '可扩展的斐波那契数列',
+				href: './fobinacci.html',
+			},{
+				id: 8,
+				title: '数子金额转换为大写金额',
+				href: './money_convert.html',
+			},{
+				id: 9,
+				title: '六位密码验证',
+				href: './password_test.html',
+			},{
+				id: 10,
+				title: 'AOP实现选项卡',
+				href: './tab.html',
+			},{
+				id: 11,
+				title: '老虎机小游戏',
+				href: './tiger_game.html',
+			},{
+				id: 12,
+				title: '回环队列实现',
+				href: './loop_queue.html',
+			},{
+				id: 13,
+				title: '多维数组转一维',
+				href: './arr_simple.html',
+			},{
+				id: 14,
+				title: '无限循环轮播',
+				href: 'http://www.feiniu.com/qqwallet',
+			},{
+				id: 15,
+				title: 'seajs+doTjs实现楼层按需加载',
+				href: './sea_dot/index.html',
+			},{
+				id: 16,
+				title: '获取func的形参',
+				href: './fnargs.html',
+			}];
+
+		init();
+
+		$(window).on('resize', containerReset);
+
+		$menu.mouseenter(menuShow).mouseleave(menuHide);
+		$menu_hider.mouseenter(menuShow);
+		$doc.on('click', '#menu li', function() {
+			$container.attr('src', $(this).data('href'));
+		});
+
+		function menuShow() {
+			$menu_hider.hide();
+			$menu.stop().animate({
+				marginLeft: 0
+			});
+		}
+
+		function menuHide() {
+			$menu.stop().animate({
+				marginLeft: -220
+			}, function() {
+				$menu_hider.show();
+			});
+		}
+
+		function containerReset() {
+			$container.css({
+				width:$(window).width() - 10,
+				height:$(window).height()
+			});
+		}
+
+		function init() {
+			containerReset();
+			var tmp = $('<li>');
+			for(var key in menu_config) {
+				tmp.clone()
+					.text(menu_config[key].title)
+					.data('href', menu_config[key].href)
+					.attr('id', 'menu_list_' + menu_config[key].id)
+					.appendTo('#menu');
+			}
+		}
+	});
 	</script>
 </body>
 </html>
