@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="fn_dialog.css">
+    <title>fn_dialog</title>
+</head>
+
+<body>
+    <button id="btn1">选规格</button>
+    <button id="btn2">警告</button>
+    <script type="text/javascript" src="doT.min.js"></script>
+    <script type="text/javascript" src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="fn_dialog.js"></script>
+    <script type="text/javascript" src="chioce.json"></script>
+    <script type="text/javascript">
+    $(function() {
+        $('#btn2').click(function() {
+            fn_dialog.warn('请选择活动赠品!');
+        });
+        $('#btn1').click(function() {
+            fn_dialog.choice(param, function(qty, smSeq, is_mall, price) {
+            	var args_name = getFnArgs(arguments.callee),
+            		ret = '',
+            		args = arguments;
+
+            	Array.prototype.forEach.call(args, function(item, i) {
+            		ret += args_name[i] + ':' + args[i] + '\n';
+            	});
+
+            	alert(ret);
+            });
+        });
+    });
+
+    function getFnArgs(fn) {
+    	return fn.toString().match(/\((.*)\)/).pop().match(/\b[$_\w\d]+\b/g);
+    }
+    </script>
+</body>
+
+</html>

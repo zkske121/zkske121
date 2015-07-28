@@ -1,0 +1,296 @@
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    
+    ul {
+        list-style: none;
+    }
+    
+    .clear {
+        clear: both;
+    }
+    
+    .fn_dialog {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        z-index: 99;
+        display: none;
+        top: 0;
+        left: 0;
+    }
+    
+    .d_bg {
+        position: absolute;
+        z-index: 99;
+        background: black;
+        float: left;
+        filter: alpha(opacity=20);
+        -moz-opacity: 0.2;
+        -khtml-opacity: 0.2;
+        top: 0;
+        left: 0;
+        opacity: 0.2;
+    }
+    
+    .d_location {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+    }
+    
+    .d_content {
+        background: #fff;
+        cursor: default;
+        position: relative;
+        z-index: 999;
+        float: left;
+    }
+    
+    .d_close {
+        width: 35px;
+        height: 35px;
+        cursor: pointer;
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: url(images/d_close.png) -35px 0 no-repeat;
+    }
+    
+    .d_close:hover {
+        background: url(images/d_close.png) 0 0 no-repeat;
+    }
+    
+    .d_content .d_warn {
+        width: 300px;
+        height: 142px;
+        text-align: center;
+        line-height: 150px;
+        font-family: '宋体';
+        font-size: 14px;
+    }
+    
+    .d_content .d_choice {
+        width: 480px;
+    }
+    
+    .c_title {
+        background: #eee;
+        width: 470px;
+        height: 33px;
+        border-bottom: 1px solid #ddd;
+        padding-left: 10px;
+        font: bold 14px '宋体';
+        line-height: 33px;
+    }
+    
+    .c_pic {
+        width: 120px;
+        height: 120px;
+        padding-top: 30px;
+        padding-left: 20px;
+        float: left;
+    }
+    
+    .c_pic img {
+        width: 119px;
+        height: 119px;
+        border: 1px solid #ddd;
+    }
+    
+    .c_item {
+        width: 295px;
+        float: left;
+        padding-top: 27px;
+        padding-left: 20px;
+        padding-right: 15px;
+        font-family: '宋体';
+        font-size: 12px;
+    }
+    
+    .i_title {
+        color: #6c6c6c;
+        line-height: 20px;
+        float: left;
+        padding-bottom: 10px;
+        width: 295px;
+    }
+    
+    .i_color {
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        color: #999;
+        text-align: center;
+        letter-spacing: 8px;
+        float: left;
+        padding-right: 4px;
+    }
+    
+    .i_color_item {
+        width: 250px;
+        float: left;
+        position: relative;
+    }
+    
+    .i_color_item li {
+        width: 40px;
+        height: 40px;
+        float: left;
+        padding-right: 10px;
+        padding-bottom: 10px;
+    }
+    
+    .i_color_item li img {
+        width: 39px;
+        height: 39px;
+        border: 1px solid #ddd;
+        cursor: pointer;
+    }
+    
+    .i_color_curr {
+        width: 39px;
+        height: 39px;
+        background: url(images/selected.png) bottom right no-repeat;
+        position: absolute;
+        top: 0;
+        left: 0;
+        border: 1px solid #f22e00;
+        display: none;
+    }
+    
+    .i_spec {
+        width: 40px;
+        height: 24px;
+        line-height: 24px;
+        color: #999;
+        text-align: center;
+        letter-spacing: 8px;
+        float: left;
+        padding-right: 4px;
+    }
+    
+    .i_spec_item {
+        width: 250px;
+        float: left;
+        position: relative;
+    }
+    
+    .i_spec_item li {
+        height: 24px;
+        float: left;
+        padding-right: 10px;
+        padding-bottom: 10px;
+    }
+    
+    .i_spec_item li span {
+        height: 24px;
+        line-height: 24px;
+        text-align: center;
+        border: 1px solid #ddd;
+        font-size: 12px;
+        font-family: 'Arial';
+        padding-left: 15px;
+        padding-right: 15px;
+        display: inline-block;
+        cursor: pointer;
+    }
+    
+    .i_spec_curr {
+        width: 39px;
+        height: 24px;
+        background: url(images/selected.png) bottom right no-repeat;
+        position: absolute;
+        top: 0;
+        left: 0;
+        border: 1px solid #f22e00;
+        display: none;
+    }
+    
+    .i_count {
+        width: 40px;
+        height: 24px;
+        line-height: 24px;
+        color: #999;
+        text-align: center;
+        letter-spacing: 8px;
+        float: left;
+        padding-right: 4px;
+    }
+    
+    .i_calc {
+        height: 22px;
+        width: 15px;
+        line-height: 24px;
+        text-align: center;
+        border: 1px solid #ddd;
+        float: left;
+        cursor: pointer;
+        color: #bababa;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+    
+    .i_calc:hover {
+        color: #6c6c6c;
+    }
+    
+    .i_count_val {
+        border: 0;
+        height: 22px;
+        width: 30px;
+        line-height: 24px;
+        text-align: center;
+        float: left;
+        border-top: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    .i_tip {
+        height: 24px;
+        line-height: 24px;
+        float: left;
+        padding-left: 10px;
+        font-family: '宋体';
+        font-size: 12px;
+        display: none; 
+    }
+    
+    .i_tip span {
+        color: #f22e00;
+    }
+    
+    .c_bottom {
+        width: 480px;
+        height: 28px;
+        float: left;
+        padding-top: 20px;
+        padding-bottom: 30px;
+        text-align: center;
+        vertical-align: center;
+    }
+    
+    .c_submit {
+        width: 120px;
+        height: 26px;
+        border: 1px solid #cd2700;
+        display: inline-block;
+        line-height: 24px;
+        cursor: pointer;
+    }
+    
+    .c_submit span {
+        width: 118px;
+        height: 24px;
+        border: 1px solid #fc7d5f;
+        background: #fb3d10;
+        color: #fff;
+        display: inline-block;
+    }
+    
+    .c_submit span:hover {
+        border: 1px solid #ee687a;
+        background: #e61c37;
+    }
