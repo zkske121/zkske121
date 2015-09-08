@@ -13,9 +13,10 @@
      * 示例请看控制台
      * @type {String}
      */
-    var price = '918239823';
+    var price = '00239823';
 	
 	function convert(price) {
+        price = parseInt(price, 10).toString();
 		var i = 0;
 		var s = ['零','壹','贰','叁','肆','伍','陆','柒','捌','玖'];
 		var str = '$亿$仟$佰$拾$万$仟$佰$拾$元';

@@ -45,6 +45,18 @@
     }
 
     console.log(arr);*/
+
+    function noRepeat(arr) {
+        var ret = arr.slice(),
+            item,
+            tmp;
+        for (var i = 0; i < ret.length; i++) {
+            item = ret[i];
+            tmp = i + 1;
+            while ((tmp = ret.indexOf(item, tmp)) > -1) ret.splice(tmp, 1);
+        }
+        return ret;
+    }
     </script>
     <script type="text/javascript" src="showcode.js"></script>
 </body>

@@ -132,7 +132,7 @@ var fn_dialog = (function() {
                 $book = $('#i_book'),
                 $inventory = $('#i_inventory');
 
-            tmp = (/(.{3,})|\D/g).test(String(tmp)) || tmp > inventory ? 1 : tmp;
+            tmp = (/(.{3,})|\D/g).test(String(tmp)) || tmp > inventory || parseInt(tmp) == 0 ? 1 : tmp;
             this.value = tmp;
             setInventory();
         });
