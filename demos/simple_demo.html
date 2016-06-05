@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>一些简单demo</title>
+</head>
+
+<body>
+    <script type="text/javascript">
+    // 数组去重
+    function noRepeat(arr) {
+        var ret = arr.slice(),
+            item,
+            tmp;
+        for (var i = 0; i < ret.length; i++) {
+            item = ret[i];
+            tmp = i + 1;
+            while ((tmp = ret.indexOf(item, tmp)) > -1) ret.splice(tmp, 1);
+        }
+        return ret;
+    }
+    </script>
+    <script>
+    // 数组扁平化
+    function flatArray(arr) {
+        var res = arr.slice(),
+            tmp;
+        for(var i = 0; i < res.length; i++) {
+          tmp = res[i];
+          if(tmp instanceof Array) {
+            Array.prototype.splice.apply(res, [i--, 1].concat(tmp));
+          } 
+        }
+
+        return res;
+    }
+    </script>
+    <script>
+    /*
+     * 斐波那契数列
+     * ([0, 1, 1], 10) => [0, 1, 1, 2, 4, 7, 13, 24, 44, 81]
+     */
+    function fibonacci(arr, n) {
+        var len = arr.length;
+        while (arr.length < n) {
+            arr.push(arr.slice(-1 * len).reduce(function(prev, next) {
+                return prev + next;
+            }));
+        }
+        return arr;
+    }
+    </script>
+    <script type="text/javascript">
+    //面向对象时钟
+    function Clock(target, speed) {
+      this.target = target;
+      this.speed  = speed;
+      this.timer  = null;
+      this.date   = null;
+    }
+
+    Clock.prototype = {
+      constructor : Clock,
+      format : function() {
+        return [].map.call(arguments, function(item) {
+            return item > 9 ? item : '0' + item;
+          }).join(':');
+      },
+      go : function() {
+        this.change();
+        this.timer = setInterval(this.change.bind(this), this.speed);
+      },
+      change : function() {
+        this.date = new Date();
+        this.target.innerHTML = this.format(this.date.getHours(), this.date.getMinutes(), this.date.getSeconds());
+      },
+      end : function() {
+        clearInterval(this.timer);
+      }
+    }
+    </script>
+    <script type="text/javascript">
+    /**
+     * 数字金额转换为大写金额
+     * 00239823 => 贰拾叁万玖仟捌佰贰拾叁元
+     */
+    function convert(price) {
+      price = parseInt(price, 10).toString();
+      var i = 0;
+      var s = ['零','壹','贰','叁','肆','伍','陆','柒','捌','玖'];
+      var str = '$亿$仟$佰$拾$万$仟$佰$拾$元';
+      return str.slice((9 - price.length)*2).replace(/\$/g, function(){
+        return s[price.charAt(i++)];  
+      });   
+    }
+    </script>
+    <script>
+    /**
+     * 6位数字密码
+     * 不能是连续的升序
+     * 不能是连续的降序
+     * 不能连续3位数字相同
+     * 不能是相同的3位数重复组成
+     * @type {String}
+     */
+    function checkPassword(password) {
+        return !(password.length != 6 
+            || '0123456789'.indexOf(password) > -1 
+            || '9876543210'.indexOf(password) > -1 
+            || /(\d)\1\1/g.test(password) 
+            || /(\d{3}\1)/g.test(password));
+    }
+    </script>
+    <script type="text/javascript" src="showcode.js"></script>
+</body>
+
+</html>

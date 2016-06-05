@@ -1,0 +1,77 @@
+var fileConfig = [{
+    id: 0,
+    title: '面向对象贪吃蛇',
+    href: './demos/snake.html',
+}, {
+    id: 1,
+    title: '策略模式图片懒加载',
+    href: './demos/z_lazyload.html',
+}, {
+    id: 2,
+    title: '自定义模块组装',
+    href: './demos/floor.html',
+}, {
+    id: 3,
+    title: '异步加载埋点js代码',
+    href: './demos/async_loadjs.html',
+}, {
+    id: 4,
+    title: 'redux-react-director',
+    href: 'redux-react-director/index.html',
+}, {
+    id: 5,
+    title: '利用堆栈实现四则运算',
+    href: './demos/calc.html',
+}, {
+    id: 6,
+    title: '一些简单demo',
+    href: './demos/simple_demo.html',
+}, {
+    id: 7,
+    title: '',
+    href: '',
+}, {
+    id: 8,
+    title: '',
+    href: '',
+}, {
+    id: 9,
+    title: '',
+    href: '',
+}, {
+    id: 10,
+    title: 'AOP实现选项卡',
+    href: './demos/tab.html',
+}, {
+    id: 11,
+    title: '老虎机小游戏',
+    href: './demos/tiger_game.html',
+}, {
+    id: 12,
+    title: '回环队列实现',
+    href: './demos/loop_queue.html',
+}, {
+    id: 13,
+    title: '',
+    href: '',
+}, {
+    id: 14,
+    title: '无限循环轮播',
+    href: 'http://www.feiniu.com/qqwallet',
+}, {
+    id: 15,
+    title: '',
+    href: '',
+}, {
+    id: 16,
+    title: '',
+    href: '',
+}, {
+    id: 17,
+    title: '',
+    href: '',
+}, {
+    id: 18,
+    title: '多规格商品选择',
+    href: 'spec_choice/fn_dialog.html'
+}];

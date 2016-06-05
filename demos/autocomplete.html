@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>面向对象自动补全</title>
+    <style type="text/css">
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .clear {
+        clear: both;
+    }
+    
+    ul {
+        list-style: none;
+    }
+    
+    #search_container {
+        width: 300px;
+        position: fixed;
+        top:100px;
+        left: 200px;
+        z-index: 99;
+    }
+    
+    #s_input {
+        width: 200px;
+        float: left;
+        height: 26px;
+    }
+    
+    #s_submit {
+        float: right;
+        border: 0;
+        height: 30px;
+        background: red;
+        color: #fff;
+        font-weight: bold;
+        width: 60px;
+        cursor: pointer;
+    }
+    
+    .s_content {
+        border: 1px solid #e7e7e7;
+        border-top: 0;
+        font-size: 13px;
+        cursor: pointer;
+        width: 200px;
+        overflow: hidden;
+        display: none;
+        background: #fff;
+    }
+    
+    .s_content li {
+        padding: 5px;
+        white-space: nowrap;
+    }
+    
+    .s_content .s_on {
+        background: #f8f8f8;
+    }
+    
+    .s_content .s_category {
+        padding-left: 15px;
+    }
+    
+    .s_key {
+        color: red;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="search_container">
+        <form action="http://search.feiniu.com">
+            <input type="text" id="s_input" name="q" autocomplete="off">
+            <input type="hidden" id="c_input" disabled="disabled" name="cpseq">
+            <input type="submit" id="s_submit" value="搜索">
+        </form>
+        <div class="clear"></div>
+        <ul class="s_content">
+        </ul>
+    </div>
+    <div style="width: 400px;height:400px;"></div>
+    <script type="text/javascript" src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src=" http://libs.baidu.com/json/json2/json2.js"></script> 
+    <script type="text/javascript">
+    if (!Function.prototype.bind) {
+        Function.prototype.bind = function(oThis) {
+            if (typeof this !== "function") {
+                // closest thing possible to the ECMAScript 5 internal IsCallable function
+                throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
+            }
+
+            var aArgs = Array.prototype.slice.call(arguments, 1),
+                fToBind = this,
+                fNOP = function() {},
+                fBound = function() {
+                    return fToBind.apply(this instanceof fNOP && oThis ? this : oThis || window,
+                        aArgs.concat(Array.prototype.slice.call(arguments)));
+                };
+
+            fNOP.prototype = this.prototype;
+            fBound.prototype = new fNOP();
+
+            return fBound;
+        };
+    }
+
+    $.support.cors = true;
+
+    function AutoComplete(container) {
+        this.timer = null;
+        this.s_input = container.find('#s_input');
+        this.c_input = container.find('#c_input');
+        this.item = $('<li>');
+        this.content = container.find('.s_content');
+        this.form = container.find('form');
+        this.s_val = {search:'', flag: false};
+        this.isIE = +[1,]; //判断是否是ie7,8
+        this.init();
+    }
+
+    AutoComplete.prototype = {
+        constructor: AutoComplete,
+        init: function() {
+            var $input = this.s_input,
+                show = this.show.bind(this),
+                timer = this.timer,
+                $content = this.content,
+                choice = this.choice.bind(this),
+                action = this.action.bind(this),
+                $form = this.form,
+                s_val = this.s_val,
+                isIE = this.isIE;
+
+            if(isIE) {
+                $input.on('input', searchAction);
+            }
+
+            //为搜索结果添加事件
+            $content.on('click', 'li', function() {
+                action($(this));
+                $form.submit();
+            });
+
+            //移入事件
+            $content.on('mouseover', 'li', function() {
+                $(this).addClass('s_on')
+                    .siblings()
+                    .removeClass('s_on');
+            });
+
+            //隐藏搜索结果
+            $(document).on('click', function(e) {
+                if ($content.is(':visible') && !$content.find(e.target).length) {
+                    $content.hide();
+                }
+            });
+
+            //上下移动
+            $(document).on('keydown', function(e) {
+                //去除上移改变光标位置事件
+                if (e.keyCode === 38) {
+                    return false;
+                } 
+            });
+
+            //上下移动,keyup事件能获取到input改变后的值
+            $(document).on('keyup', function(e) {
+                if (e.keyCode === 38 && $content.is(':visible')) {
+                    choice($content, true);
+                    return false;
+                } else if (e.keyCode === 40 && $content.is(':visible')) {
+                    choice($content, false);
+                } else if ($input.val() !== s_val.search && !isIE) {
+                    searchAction();
+                }
+            });
+
+            function searchAction() {
+                timer && clearTimeout(timer);
+                
+                timer = setTimeout(function() {
+                    s_val.search = $input.val();
+                    $.ajax({
+                        url: 'http://www.feiniu.com/search/autocomplete?term=' + $input.val(),
+                        type: 'GET',
+                        error: function(data, e, info) {
+                            console.log(data, e, info);
+                            for(var key in data) {
+                                console.log(key, data[key]);
+                            }
+                        }
+                    }).done(show);
+                }, 300);
+            }
+
+        },
+        show: function(json) {
+            var $li = this.item,
+                $content = this.content,
+                tmp;
+
+            //没有匹配内容
+            if (!json.length || json === '[]') {
+                $content.hide();
+                return;
+            }
+
+            json = JSON.parse(json);
+            $content.empty();
+            for (var key in json) {
+                tmp = json[key];
+                if (tmp.category.length) {
+                    $.each(tmp.category, function(i, item) {
+                        var li = $li.clone()
+                            .addClass('s_category')
+                            .data('cpseq', item.cp_seq)
+                            .appendTo($content)
+                            .html('在<span class="s_key">' + item.name + '</span>分类中搜索');
+                    });
+                    $content.prepend($li.clone().text(json[0].curr)).show();
+                } else {
+                    var li = $li.clone()
+                        .text(tmp.label)
+                        .appendTo($content);
+                }
+            }
+
+            $content.find('.s_category:last').css({
+                borderBottom: '1px dashed gray'
+            });
+
+        },
+        choice: function($content, direction) {
+            var $curr = $content.find('.s_on');
+            var $li = $content.find('li');
+            var target = 0;
+
+            if ($curr.length) {
+                if (direction) {
+                    target = $curr.index() ? $curr.index() - 1 : $li.length - 1;
+                } else {
+                    target = $curr.index() === $li.length - 1 ? 0 : $curr.index() + 1;
+                }
+
+                $curr.removeClass('s_on');
+            }
+
+            $li.eq(target).addClass('s_on');
+            this.action($li.eq(target));
+        },
+        action: function($curr) {
+            if ($curr.hasClass('s_category')) {
+                this.s_input.val(this.s_val.search);
+                this.c_input.val($curr.data('cpseq'))
+                            .removeAttr('disabled');
+            } else {
+                this.s_input.val($curr.html());
+                this.c_input.attr('disabled', 'disabled');
+            }
+        }
+    }
+
+    var search = new AutoComplete($('#search_container'));
+    </script>
+    <script type="text/javascript" src="showcode.js"></script>
+</body>
+
+</html>

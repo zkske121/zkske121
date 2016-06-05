@@ -68,93 +68,17 @@
     <ul id="menu">
     </ul>
     <span id="menu_hider"></span>
-    <iframe src="http://zkske121.github.io/snake.html" id="container"></iframe>
+    <iframe src="./redux-react-director/index.html" id="container" style='width:90%;'></iframe>
     <script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+    <script src='fileConfig.js'></script>
     <script type="text/javascript">
     $(function() {
         var $container = $('#container'),
             $menu = $('#menu'),
             $menu_hider = $('#menu_hider'),
-            $doc = $(document),
-            menu_config = [{
-                id: 0,
-                title: '面向对象贪吃蛇',
-                href: './snake.html',
-            }, {
-                id: 1,
-                title: '策略模式图片懒加载',
-                href: './z_lazyload.html',
-            }, {
-                id: 2,
-                title: '自定义模块组装',
-                href: './floor.html',
-            }, {
-                id: 3,
-                title: '异步加载埋点js代码',
-                href: './async_loadjs.html',
-            }, {
-                id: 4,
-                title: '邮箱去重',
-                href: './arr_norepeat.html',
-            }, {
-                id: 5,
-                title: '利用堆栈实现四则运算',
-                href: './calc.html',
-            }, {
-                id: 6,
-                title: '面向对象时钟',
-                href: './clock.html',
-            }, {
-                id: 7,
-                title: '可扩展的斐波那契数列',
-                href: './fobinacci.html',
-            }, {
-                id: 8,
-                title: '数子金额转换为大写金额',
-                href: './money_convert.html',
-            }, {
-                id: 9,
-                title: '六位密码验证',
-                href: './password_test.html',
-            }, {
-                id: 10,
-                title: 'AOP实现选项卡',
-                href: './tab.html',
-            }, {
-                id: 11,
-                title: '老虎机小游戏',
-                href: './tiger_game.html',
-            }, {
-                id: 12,
-                title: '回环队列实现',
-                href: './loop_queue.html',
-            }, {
-                id: 13,
-                title: '多维数组转一维',
-                href: './arr_simple.html',
-            }, {
-                id: 14,
-                title: '无限循环轮播',
-                href: 'http://www.feiniu.com/qqwallet',
-            }, {
-                id: 15,
-                title: 'seajs+doTjs实现楼层按需加载',
-                href: './sea_dot/index.html',
-            }, {
-                id: 16,
-                title: '获取func的形参',
-                href: './fnargs.html',
-            }, {
-                id: 17,
-                title: '面向对象自动补全',
-                href: './autocomplete.html',
-            }, {
-                id: 18,
-                title: '多规格商品选择',
-                href: './spec_choice/fn_dialog.html'
-            }];
+            $doc = $(document);
 
-        init();
+        init(fileConfig);
 
         $(window).on('resize', containerReset);
 
@@ -186,14 +110,18 @@
             });
         }
 
-        function init() {
+        function init(config) {
             containerReset();
-            var tmp = $('<li>');
-            for (var key in menu_config) {
+            var tmp = $('<li>'), item;
+            for (var key in config) {
+                item = config[key];
+
+                if(!item.title || !item.href) continue;
+
                 tmp.clone()
-                    .text(menu_config[key].title)
-                    .data('href', menu_config[key].href)
-                    .attr('id', 'menu_list_' + menu_config[key].id)
+                    .text(item.title)
+                    .data('href', item.href)
+                    .attr('id', 'menu_list_' + item.id)
                     .appendTo('#menu');
             }
         }
