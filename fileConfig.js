@@ -28,16 +28,16 @@ var fileConfig = [{
     href: './demos/simple_demo.html',
 }, {
     id: 7,
-    title: '',
-    href: '',
+    title: 'co库解决回调地狱',
+    href: './demos/cojs.html',
 }, {
     id: 8,
-    title: '',
-    href: '',
+    title: '数组多条件排序',
+    href: './demos/mutipSort.html',
 }, {
     id: 9,
-    title: '',
-    href: '',
+    title: '雪花',
+    href: './demos/snow.html',
 }, {
     id: 10,
     title: 'AOP实现选项卡',
@@ -52,26 +52,34 @@ var fileConfig = [{
     href: './demos/loop_queue.html',
 }, {
     id: 13,
-    title: '',
-    href: '',
+    title: '导航切换效果',
+    href: './demos/nav_choice.html',
 }, {
     id: 14,
     title: '无限循环轮播',
     href: 'http://www.feiniu.com/qqwallet',
 }, {
     id: 15,
-    title: '',
-    href: '',
+    title: '分页组件',
+    href: './demos/pages.html',
 }, {
     id: 16,
-    title: '',
-    href: '',
+    title: '瀑布流',
+    href: './demos/falls.html',
 }, {
     id: 17,
-    title: '',
-    href: '',
+    title: '滚动条效果增强',
+    href: './demos/power_scroll.html',
 }, {
     id: 18,
     title: '多规格商品选择',
     href: 'spec_choice/fn_dialog.html'
+}, {
+    id: 19,
+    title: '状态模式乘法口诀',
+    href: './demos/multiplication.html'
+}, {
+    id: 20,
+    title: '计算考勤',
+    href: './demos/count_worktime.html'
 }];

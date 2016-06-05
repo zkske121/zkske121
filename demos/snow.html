@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta charset="UTF-8">
+    <title>
+        snow
+    </title>
+    <style>
+    * {
+        padding: 0;
+        margin: 0;
+    }
+    
+    body {
+        background-color: green;
+        height: 2000px;
+    }
+    /*雪花*/
+    
+    @keyframes mysnow {
+        0% {
+            bottom: 100%;
+            opacity: 0;
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+            bottom: 0;
+        }
+    }
+    
+    @-webkit-keyframes mysnow {
+        0% {
+            bottom: 100%;
+            opacity: 0;
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+            bottom: 0;
+        }
+    }
+    
+    #snowzone {
+        position: absolute;
+        z-index: 2;
+    }
+    
+    .dot {
+        position: absolute;
+        opacity: 0;
+        animation: mysnow 5s;
+        -webkit-animation: mysnow 5s;
+        height: 50px;
+        z-index: 999;
+        background-color: #fff;
+        width: 2px;
+        height: 2px;
+        border-radius: 50%;
+    }
+    
+    .dot.d0 {
+        box-shadow: 0 0 5px 3px #fff;
+    }
+    
+    .dot.d1 {
+        box-shadow: 0 0 6px 6px #fff;
+    }
+    /*.dot.d2 {
+	box-shadow:0 0 10px 10px #fff;
+	}
+
+	.dot.d3 {
+	box-shadow:0 0 20px 20px #fff;
+	}
+	*/
+    
+    .snow {
+        position: fixed;
+        z-index: 999;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="snowzone">
+    </div>
+    <script>
+    /*雪花*/
+    (function() {
+        function getSnow(left, height, dotName) {
+            var snow = document.createElement("div");
+            var dot = document.createElement("div");
+            snow.appendChild(dot);
+            dot.className = dotName;
+            snow.style.left = left + "px";
+            snow.style.height = height + "px";
+            snow.className = "snow";
+            document.getElementById("snowzone").appendChild(snow);
+            setTimeout(function() {
+                    document.getElementById("snowzone").removeChild(snow);
+                },
+                5000);
+        }
+        setInterval(function() {
+                var left = Math.random() * window.innerWidth;
+                var height = Math.random() * window.innerHeight;
+                var dotName = "dot d" + Math.floor(Math.random() * 2);
+                getSnow(left, height, dotName);
+            },
+            100);
+    })();
+    </script>
+</body>
+
+</html>

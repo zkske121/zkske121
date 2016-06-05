@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+    img {
+        width: 100%;
+    }
+    </style>
+    <link rel="stylesheet" type="text/css" class="library" href="http://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.css">
+    <script type="text/javascript" class="library" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 list">
+            </div>
+            <div class="col-md-4 list">
+            </div>
+            <div class="col-md-4 list">
+            </div>
+        </div>
+    </div>
+    <script>
+    $(function() {
+        var lists = $('.list'),
+            $d = $(document),
+            $w = $(window);
+
+        loadImg(function() {
+            return $d.height() <= $w.height();
+        }, function() {
+            $w.on('mousewheel', mouseLoad);
+        });
+
+        function mouseLoad() {
+            if ($d.scrollTop() >= $d.height() - $w.height()) {
+                $w.off('mousewheel', mouseLoad);
+                loadImg(function() {
+                    return $d.scrollTop() >= $d.height() - $w.height();
+                }, function() {
+                    $w.on('mousewheel', mouseLoad);
+                });
+            }
+        }
+
+        function loadImg(check, callback) {
+            var img = randomImg();
+
+            img.on('load', function() {
+                if (check && check()) {
+                    loadImg(check, callback);
+                } else {
+                    callback && callback();
+                }
+            });
+            getMinBox().append(img);
+        }
+
+        function getMinBox() {
+            var min = lists.eq(0);
+            lists.each(function(i, v) {
+                var $v = $(v);
+                if ($v.height() < min.height()) min = $v;
+            });
+            return min;
+        }
+
+        function randomImg() {
+            return $('<img class="img-thumbnail">').attr('src', 'http://dummyimage.com/' + Math.ceil(2 + Math.random() * 5) + '00x' + Math.ceil(Math.random() * 5) + '00/c60000/fff');
+        }
+    });
+    </script>
+</body>
+
+</html>

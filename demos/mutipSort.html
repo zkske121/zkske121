@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>数组多条件排序</title>
+</head>
+
+<body>
+	<div id="container"></div>
+    <script>
+    /*
+     * 数组多条件排序
+     */
+    var data = [], html = '';
+
+    function Person(name, age, sex) {
+        this.name = name;
+        this.age = age;
+        this.sex = sex;
+    }
+
+    data.push(new Person('zzz', 12, 1));
+    data.push(new Person('zzz', 12, 0));
+    data.push(new Person('aaa', 12, 1));
+    data.push(new Person('bbb', 14, 1));
+    data.push(new Person('zzz', 14, 1));
+    data.push(new Person('bbb', 12, 0));
+    data.push(new Person('sdf', 12, 0));
+    data.push(new Person('sd', 12, 1));
+    data.push(new Person('sdf', 15, 0));
+    data.push(new Person('sdf', 15, 1));
+    data.push(new Person('sdf', 12, 1));
+
+	html += '排序前<br />';
+    data.forEach(function(v, i) {
+        html += [i, '. ', v.name, , ' ', v.age, ' ', v.sex, '<br />'].join('');
+    });
+
+    console.log('before sort', data);
+
+    function getSort(fn) {
+        return function(a, b) {
+            var ret = 0;
+
+            if (fn.call(this, a, b)) {
+                ret = -1;
+            } else if (fn.call(this, b, a)) {
+                ret = 1;
+            }
+
+            return ret;
+        }
+    }
+
+    function getMutipSort(arr) {
+        return function(a, b) {
+            var tmp, i = 0;
+
+            do {
+                tmp = arr[i++](a, b);
+            } while (tmp == 0 && i < arr.length);
+
+            return tmp;
+        }
+    }
+
+    var ageSort = getSort(function(a, b) {
+        return a.age < b.age;
+    });
+
+    var nameSort = getSort(function(a, b) {
+        return a.name < b.name;
+    });
+
+    var sexSort = getSort(function(a, b) {
+        return a.sex && !b.sex;
+    });
+
+    //判断条件先后顺序可调整
+    var arr = [nameSort, ageSort, sexSort];
+
+    var ret = data.sort(getMutipSort(arr));
+
+    html += '按name， age， sex排序<br />'
+    ret.forEach(function(v, i) {
+        html += [i, '. ', v.name, , ' ', v.age, ' ', v.sex, '<br />'].join('');
+    });
+
+    document.querySelectorAll('#container')[0].innerHTML = html;
+
+    console.log('after sort', ret);
+    </script>
+    <script type="text/javascript" src="showcode.js"></script>
+</body>
+
+</html>

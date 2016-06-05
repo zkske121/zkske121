@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>滚动条增强</title>
+    <style>
+    .con {
+        height: 2000px;
+        background-color: grey;
+        color: white;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="con">
+        滚动条到顶部与底部时,继续滚动,有缓冲效果
+    </div>
+    <script>
+    (function() {
+        var timer1, mousewheelevt = (/Firefox/i.test(navigator.userAgent)) ? "DOMMouseScroll" : "mousewheel";
+
+        if (document.attachEvent) {
+            document.attachEvent("on" + mousewheelevt, powerScroll);
+        } else {
+            document.addEventListener(mousewheelevt, powerScroll, false);
+        }
+
+        function powerScroll() {
+            var scrollTop = getScrollTop(),
+                orien = scrollTop == 0 ? 'paddingTop' : isScrollBottom() ? 'paddingBottom' : '';
+            if (orien) {
+                add(20,
+                    function() {
+                        bodyPadding(orien, 1);
+                    });
+                timer1 && clearTimeout(timer1);
+                timer1 = setTimeout(function() {
+                        move(bodyPadding(orien),
+                            function(tmp) {
+                                bodyPadding(orien, -tmp);
+                            },
+                            function() {
+                                bodyPadding(orien, 0, 0);
+                            });
+                    },
+                    200);
+            }
+        }
+
+        function bodyPadding(orien, step, val) {
+            var curr = parseInt(document.body.style[orien]),
+                target;
+            !curr && (curr = 0);
+            step && (target = curr + step);
+            val !== undefined && (target = val);
+            target !== undefined && (document.body.style[orien] = target + 'px');
+            return curr;
+        }
+
+        function add(count, fn) {
+            setTimeout(function() {
+                if (--count) {
+                    fn();
+                    add(count, fn);
+                }
+            });
+        }
+
+        function move(target, fn, callback) {
+            setTimeout(function() {
+                    target = 2 * target / 3;
+                    if (target > 1) {
+                        fn(target);
+                        move(target, fn, callback);
+                    } else {
+                        callback();
+                    }
+                },
+                10);
+        }
+
+        function isScrollBottom() {
+            return document.body.clientHeight - getWinHeight() - getScrollTop() <= 0;
+        }
+
+        function getWinHeight() {
+            return window.attachEvent ? document.documentElement.clientHeight : window.innerHeight;
+        }
+
+        function getScrollTop() {
+            return window.pageYOffset || document.body.scrollTop || document.documentElement.scrollTop || 0;
+        }
+    })();
+    </script>
+</body>
+
+</html>
