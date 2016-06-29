@@ -33,16 +33,16 @@
         name: [
             repalceInvalid.bind(null, /\s/g),
             repalceInvalid.bind(null, /[^\w\d\u4E00-\u9FA5\uF900-\uFA2D]/g),
-            checkLength.bind(null, 8 * 2)
+            validStrLength.bind(null, 8 * 2)
         ],
         phone: [
             repalceInvalid.bind(null, /\s/g),
             repalceInvalid.bind(null, /[^\d]/g),
-            checkLength.bind(null, 11)
+            validStrLength.bind(null, 11)
         ],
         address: [
             repalceInvalid.bind(null, /\s/g),
-            checkLength.bind(null, 100 * 2)
+            validStrLength.bind(null, 100 * 2)
         ]
     };
 
@@ -72,22 +72,21 @@
         return val.replace(reg, '');
     }
 
-    // 校验字符串,超出长度则截取
-    function checkLength(length, val) {
-        return getCharsLength(val) > length ? val.substr(0, length) : val;
-    }
-
-    // 获取字符串字节长度,汉子以2个字节计算
-    function getCharsLength(val) {
+    // 验证字符串字节长度,汉子以2个字节计算
+    function validStrLength(length, val) {
         var tmp = val.replace(/-/g, '0').replace(/[\u4E00-\u9FA5\uF900-\uFA2D]/g, '-');
-        var len = 0;
+        var len = length;
 
         for (var i = 0; i < tmp.length; i++) {
-            len++;
-            tmp.charAt(i) === '-' && len++;
+            len--;
+            if (tmp.charAt(i) === '-') len--;
+
+            if (len <= 0) {
+                return val.substr(0, i + 1);
+            }
         }
 
-        return len;
+        return val;
     }
     </script>
     <script type="text/javascript" src="showcode.js"></script>
