@@ -82,4 +82,8 @@ var fileConfig = [{
     id: 20,
     title: '计算考勤',
     href: './demos/count_worktime.html'
+}, {
+    id: 21,
+    title: '表单验证',
+    href: './demos/form_valid.html'
 }];

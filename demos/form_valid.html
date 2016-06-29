@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>表单验证</title>
+</head>
+
+<body>
+    <div id="container">
+        <ul>
+            <li>
+                <label for="name">姓名</label>
+                <input type="text" name="name" placeholder='最多8个汉字'>
+            </li>
+            <li>
+                <label for="phone">电话</label>
+                <input type="text" name="phone" placeholder="11位数字">
+            </li>
+            <li>
+                <label for="address">地址</label>
+                <textarea name="address" placeholder="不能超过100个汉字"></textarea>
+            </li>
+        </ul>
+        <button id="submit">提交</button>
+    </div>
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <script>
+    var $inputs = $('#container [name]'),
+        $btn = $('#submit');
+
+    var config = {
+        name: [
+            repalceInvalid.bind(null, /\s/g),
+            repalceInvalid.bind(null, /[^\w\d\u4E00-\u9FA5\uF900-\uFA2D]/g),
+            checkLength.bind(null, 8 * 2)
+        ],
+        phone: [
+            repalceInvalid.bind(null, /\s/g),
+            repalceInvalid.bind(null, /[^\d]/g),
+            checkLength.bind(null, 11)
+        ],
+        address: [
+            repalceInvalid.bind(null, /\s/g),
+            checkLength.bind(null, 100 * 2)
+        ]
+    };
+
+    $inputs.on('input', function(e) {
+        var target = e.target,
+            val = target.value,
+            type = target.name;
+
+        target.value = validVal(val, config[type]);
+    });
+
+    $btn.on('click', function(e) {
+        console.log('submit', $inputs.map(function(i, v) {
+            return validVal(v.value, config[v.name]);
+        }));
+    });
+
+    // 验证字符
+    function validVal(val, fns) {
+        return fns.reduce(function(p, n) {
+            return n(p);
+        }, val);
+    }
+
+    // 去除非法字符
+    function repalceInvalid(reg, val) {
+        return val.replace(reg, '');
+    }
+
+    // 校验字符串,超出长度则截取
+    function checkLength(length, val) {
+        return getCharsLength(val) > length ? val.substr(0, length) : val;
+    }
+
+    // 获取字符串字节长度,汉子以2个字节计算
+    function getCharsLength(val) {
+        var tmp = val.replace(/-/g, '0').replace(/[\u4E00-\u9FA5\uF900-\uFA2D]/g, '-');
+        var len = 0;
+
+        for (var i = 0; i < tmp.length; i++) {
+            len++;
+            tmp.charAt(i) === '-' && len++;
+        }
+
+        return len;
+    }
+    </script>
+    <script type="text/javascript" src="showcode.js"></script>
+</body>
+
+</html>
