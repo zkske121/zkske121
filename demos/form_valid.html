@@ -49,9 +49,11 @@
     $inputs.on('input', function(e) {
         var target = e.target,
             val = target.value,
-            type = target.name;
+            type = target.name,
+            tmp = validVal(val, config[type]);
 
-        target.value = validVal(val, config[type]);
+        if(tmp === val) return;
+        target.value = tmp;
     });
 
     $btn.on('click', function(e) {
