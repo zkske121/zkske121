@@ -4,6 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <title>表单验证</title>
+    <style>
+    .red {
+        color: red;
+    }
+    </style>
 </head>
 
 <body>
@@ -29,37 +34,87 @@
     var $inputs = $('#container [name]'),
         $btn = $('#submit');
 
+    // input 输入时验证,不允许非法输入
+    // submit 提交时验证,必须满足固定格式
     var config = {
-        name: [
-            repalceInvalid.bind(null, /\s/g), // 去除空格
-            repalceInvalid.bind(null, /[^\w\d\u4E00-\u9FA5\uF900-\uFA2D]/g), // 只能字母,数字,中文,韩文,日文
-            validStrLength.bind(null, 8 * 2) // 中文8位,其他字符16位
-        ],
-        phone: [
-            repalceInvalid.bind(null, /\s/g), // 去除空格
-            repalceInvalid.bind(null, /[^\d]/g), // 只能是数字
-            validStrLength.bind(null, 11) // 11位
-        ],
-        address: [
-            repalceInvalid.bind(null, /\s/g), // 去除空格
-            validStrLength.bind(null, 100 * 2) // 中文100位,其他字符200位
-        ]
+        name: {
+            input: [
+                repalceInvalid.bind(null, /\s/g), // 去除空格
+                repalceInvalid.bind(null, /[^\w\d\u4E00-\u9FA5\uF900-\uFA2D]/g), // 只能字母,数字,中文,韩文,日文
+                validStrLength.bind(null, 8 * 2) // 中文8位,其他字符16位
+            ],
+            submit: [
+                notEmptyStr // 不能为空
+            ],
+            message: ''
+        },
+        phone: {
+            input: [
+                repalceInvalid.bind(null, /\s/g), // 去除空格
+                repalceInvalid.bind(null, /[^\d]/g), // 只能是数字
+                validStrLength.bind(null, 11) // 11位
+            ],
+            submit: [
+                notEmptyStr, // 不能为空
+                testInvalid.bind(null, /^\d{11}$/) // 必须为11位数字
+            ],
+            message: ''
+        },
+        address: {
+            input: [
+                repalceInvalid.bind(null, /\s/g), // 去除空格
+                validStrLength.bind(null, 100 * 2) // 中文100位,其他字符200位
+            ],
+            submit: [
+                notEmptyStr // 不能为空
+            ],
+            message: ''
+        }
     };
 
+    // 初始默认警告提示语
+    $inputs.each(function(i, v) {
+        config[v.name].message = '请填写正确的' + $(v).siblings('label').text();
+    });
+
+    // 输入事件绑定
     $inputs.on('input', function(e) {
         var target = e.target,
             val = target.value,
             type = target.name,
-            tmp = validVal(val, config[type]);
+            tmp = validVal(val, config[type].input);
 
-        if(tmp === val) return;
+        if (tmp === val) return;
         target.value = tmp;
     });
 
+    // 提交事件绑定
     $btn.on('click', function(e) {
-        console.log('submit', $inputs.map(function(i, v) {
-            return validVal(v.value, config[v.name]);
-        }));
+        var res, text,
+            tail = '\n', // 后缀换行符可替换,如<br />,
+            reduce = Array.prototype.reduce;
+
+        res = $inputs.each(function(i, input) {
+            $(input).siblings('label').removeClass('red'); // 先移除警告样式
+        }).filter(function(i, v) {
+            // 不满足某验证函数
+            return config[v.name].submit.some(function(validFn, i) {
+                return !validFn(v.value);
+            });
+        });
+
+        if (res.length) {
+            text = reduce.call(res, function(p, input) {
+                $(input).siblings('label').addClass('red'); // 为没通过的添加警告样式
+                return p + config[input.name].message + tail;
+            }, '').slice(0, -tail.length);
+        } else {
+            text = reduce.call($inputs, function(p, input) {
+                return p + input.name + ' :  ' + input.value + tail;
+            }, '').slice(0, -tail.length);
+        }
+
+        alert(text);
     });
 
     // 验证字符
@@ -72,6 +127,16 @@
     // 去除非法字符
     function repalceInvalid(reg, val) {
         return val.replace(reg, '');
+    }
+
+    // 验证字符串
+    function testInvalid(reg, val) {
+        return reg.test(val);
+    }
+
+    // 是否为空
+    function notEmptyStr(val) {
+        return val !== '';
     }
 
     // 验证字符串字节长度,汉子以2个字节计算
