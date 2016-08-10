@@ -12,7 +12,7 @@ var fileConfig = [{
     href: './demos/floor.html',
 }, {
     id: 3,
-    title: '异步加载埋点js代码',
+    title: '加载埋点js代码',
     href: './demos/async_loadjs.html',
 }, {
     id: 4,
