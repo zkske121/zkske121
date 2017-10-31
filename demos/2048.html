@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+	#container {
+		font-size: 35px;
+	}
+	</style>
+</head>
+<body>
+	使用上下左右或WASD操作！
+	<pre id="container">
+		
+	</pre>
+	<script>
+	var container = document.getElementById('container');
+	var data = getData(4, 4);;
+	var timer;
+
+
+	function check() {
+		var ret = true;
+
+		eachData(4, 4, function(i, j) {
+			if(data[i][j] == 0) ret = false;
+		});
+
+		return ret;
+	}
+
+	function getData(n, m) {
+		var ret = [];
+
+		eachData(4, 4, function(i, j) {
+			ret[i].push(0);
+		}, function(i, j) {
+			ret[i] = [];
+		});
+
+		return ret;
+	}
+
+	function transfrom(source, orientation, reverse) {
+		var ret = [[], [], [], []];
+
+		eachData(4, 4, function(i, j) {
+			switch(orientation.toLowerCase()) {
+				case 'right':
+					if(reverse) {
+						ret[3-i][3-j] = source[i][j];
+					} else {
+						ret[i][j] = source[3-i][3-j];
+					}
+					break;
+				case 'up':
+					if(reverse) {
+						ret[j][3-i] = source[i][j];
+					} else {
+						ret[i][j] = source[j][3-i];
+					}
+					break;
+				case 'down':
+					if(reverse) {
+						ret[3-j][i] = source[i][j];
+					} else {
+						ret[i][j] = source[3-j][i];
+					}
+					break;
+				case 'left':
+				default: 
+					ret = source;
+					break;
+			}
+		});
+
+		return ret;
+	}
+
+	function action(data) {
+		var m = data.length,
+			n = data[0].length - 1;
+
+		eachData(m, n, function(i, j) {
+			if(data[i][j] && data[i][j] == data[i][j + 1]) {
+				data[i][j] = data[i][j] * 2;
+				data[i].splice(j + 1, 1);
+				data[i].push(0);
+			}
+		}, function(i, j) {
+			data[i].sort(zeroSort);
+		});
+
+		return data;
+	}
+
+	function zeroSort(a, b) {
+		if(a == 0) {
+			return 1;
+		} else if(b == 0) {
+			return -1;
+		} else {
+			return 0;
+		}
+	}
+
+	function randomValue() {
+		var time = 2;
+		var ary = [1, 2];
+		var m, n;
+
+		if(check()) return;
+
+		while(time--) {
+			m = randomNum(4),
+			n = randomNum(4);
+			if(data[m][n]) {
+				time++;
+				continue;
+			}
+			
+			data[m][n] = ary[Math.random() > 0.5 ? 0 : 1];
+			if(check()) break;
+		}
+	}
+
+	function randomNum(n) {
+		return Math.floor(Math.random() * n);
+	}
+
+	function render() {
+		var tmp,
+			content = '';
+
+		for(var i = 0; i < 4; i++) {
+			tmp = [];
+			for(var j = 0; j < 4; j++) {
+				tmp.push(data[i][j]);
+			}
+			content += '\n' + tmp.join('|');
+		}
+
+		container.innerHTML = content;
+	}
+
+	function eachData(m, n, every, line) {
+		for(var i = 0; i < m; i++) {
+			line && line(i, j);
+			for(var j = 0; j < n; j++) {
+				every && every(i, j);
+			}
+		}
+	}
+
+
+	randomValue();
+	randomValue();
+	render();
+
+	document.onkeydown = function(e) {
+		var keys = {
+			87: 'up',
+			65: 'left',
+			83: 'down',
+			68: 'right',
+			38: 'up',
+			37: 'left',
+			40: 'down',
+			39: 'right'
+		}
+		var key = keys[e.keyCode];
+		var tmp = transfrom(data, key);
+			tmp = action(tmp);
+			tmp = transfrom(tmp, key, true);
+		data = tmp;
+		randomValue();
+		render();
+	}
+	</script>
+	<script type="text/javascript" src="showcode.js"></script>
+</body>
+</html>
