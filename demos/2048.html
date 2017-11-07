@@ -5,19 +5,32 @@
 	<title>Document</title>
 	<style>
 	#container {
-		font-size: 35px;
+		margin: 100px 0 0 300px;
+	}
+
+	#container span {
+		display: inline-block;
+		border: 1px solid gray;
+		width: 100px;
+		height: 100px;
+		background-color: orange;
+		color: #fff;
+		text-align: center;
+		line-height: 100px;
+		font-size: 37px;
 	}
 	</style>
 </head>
 <body>
 	使用上下左右或WASD操作！
-	<pre id="container">
+	<div id="container">
 		
-	</pre>
+	</div>
 	<script>
 	var container = document.getElementById('container');
-	var data = getData(4, 4);;
+	var data = getData(4, 4);
 	var timer;
+	var TARGET = 1024;
 
 
 	function check() {
@@ -130,15 +143,13 @@
 	}
 
 	function render() {
-		var tmp,
-			content = '';
+		var content = '';
 
 		for(var i = 0; i < 4; i++) {
-			tmp = [];
 			for(var j = 0; j < 4; j++) {
-				tmp.push(data[i][j]);
+				content += '<span>' + data[i][j] + '</span>';
 			}
-			content += '\n' + tmp.join('|');
+			content += '</br>';
 		}
 
 		container.innerHTML = content;
@@ -151,6 +162,32 @@
 				every && every(i, j);
 			}
 		}
+	}
+
+	function isOver(data) {
+		var ret = 0;
+
+		eachData(4, 4, function(i, j) {
+			if(data[i][j] == TARGET) ret += 100;
+
+			if(
+				data[i][j] == 0 
+				|| (i < 3 && data[i][j] == data[i+1][j])
+				|| (j < 3 && data[i][j] == data[i][j+1])
+			) {
+				ret += 1;
+			}
+		});
+
+		if(ret == 0) {
+			alert('game over!');
+			document.onkeydown = null;
+		} else if(ret >= 100) {
+			alert('win!');
+			document.onkeydown = null;
+		}
+
+		return !ret;
 	}
 
 
@@ -171,8 +208,12 @@
 		}
 		var key = keys[e.keyCode];
 		var tmp = transfrom(data, key);
-			tmp = action(tmp);
-			tmp = transfrom(tmp, key, true);
+
+		tmp = action(tmp);
+
+		if(isOver(tmp)) return;
+
+		tmp = transfrom(tmp, key, true);
 		data = tmp;
 		randomValue();
 		render();

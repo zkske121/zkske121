@@ -1,93 +1,93 @@
 var fileConfig = [{
-    id: 0,
+    id: 2,
     title: '面向对象贪吃蛇',
     href: './demos/snake.html',
 }, {
-    id: 1,
+    id: 3,
     title: '策略模式图片懒加载',
     href: './demos/z_lazyload.html',
 }, {
-    id: 2,
+    id: 0,
     title: '自定义模块组装',
     href: './demos/floor.html',
 }, {
-    id: 3,
+    id: 0,
     title: '异步加载埋点js代码',
     href: './demos/async_loadjs.html',
 }, {
-    id: 4,
+    id: 1,
     title: 'redux-react-director',
     href: 'redux-react-director/index.html',
 }, {
-    id: 5,
+    id: 0,
     title: '利用堆栈实现四则运算',
     href: './demos/calc.html',
 }, {
-    id: 6,
+    id: 0,
     title: '一些简单demo',
     href: './demos/simple_demo.html',
 }, {
-    id: 7,
+    id: 0,
     title: 'co库解决回调地狱',
     href: './demos/cojs.html',
 }, {
-    id: 8,
+    id: 3,
     title: '数组多条件排序',
     href: './demos/mutipSort.html',
 }, {
-    id: 9,
+    id: 0,
     title: '雪花',
     href: './demos/snow.html',
 }, {
-    id: 10,
+    id: 3,
     title: 'AOP实现选项卡',
     href: './demos/tab.html',
 }, {
-    id: 11,
+    id: 2,
     title: '老虎机小游戏',
     href: './demos/tiger_game.html',
 }, {
-    id: 12,
+    id: 0,
     title: '回环队列实现',
     href: './demos/loop_queue.html',
 }, {
-    id: 13,
+    id: 4,
     title: '导航切换效果',
     href: './demos/nav_choice.html',
 }, {
-    id: 14,
+    id: 0,
     title: '无限循环轮播',
     href: 'http://www.feiniu.com/qqwallet',
 }, {
-    id: 15,
+    id: 3,
     title: '分页组件',
     href: './demos/pages.html',
 }, {
-    id: 16,
+    id: 2,
     title: '瀑布流',
     href: './demos/falls.html',
 }, {
-    id: 17,
+    id: 2,
     title: '滚动条效果增强',
     href: './demos/power_scroll.html',
 }, {
-    id: 18,
+    id: 0,
     title: '多规格商品选择',
     href: 'spec_choice/fn_dialog.html'
 }, {
-    id: 19,
+    id: 2,
     title: '状态模式乘法口诀',
     href: './demos/multiplication.html'
 }, {
-    id: 20,
+    id: 3,
     title: '计算考勤',
     href: './demos/count_worktime.html'
 }, {
-    id: 21,
+    id: 0,
     title: '表单验证',
     href: './demos/form_valid.html'
 }, {
-    id: 22,
+    id: 2,
     title: '2048',
     href: './demos/2048.html'
 }];
