@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import { Provider } from "react-redux";
 import './App.css';
-import { Button } from 'antd-mobile';
+import createStore from './store/createStore';
+import Home from './containers/home';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <Button>xxxx</Button>
-      </div>
+      <Provider store={createStore()}>
+        <div className="App">
+          <Home />
+        </div>
+      </Provider>
     );
   }
 }
