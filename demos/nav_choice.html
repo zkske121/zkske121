@@ -12,14 +12,20 @@
         margin: 0;
     }
     
+    body {
+        height: 2000px;
+    }
+
     ul {
         list-style: none;
     }
     
     .container {
-        margin: 100px;
         line-height: 50px;
-        position: relative;
+        position: fixed;
+        left: 0;
+        top: 0;
+        background-color: darkgray;
     }
     
     .clearfix {
@@ -104,19 +110,67 @@
     $(function() {
         var $curr = $('.ceil'),
             $currList = $curr.find('.ceil-list');
-        $('.container').on('click', '.floor li',
-            function() {
-                var move = $(this).offset().left - $(this).parent().offset().left;
-                $currList.animate({
-                    marginLeft: -move
-                });
-                $curr.animate({
-                    left: move
-                });
+
+        var $liList = $('.floor li');
+        var HEIGHT = 200;
+        var currentIndex = 0;
+
+        $liList.each(function(i, li) {
+            $(li).attr('id', i);
+        });
+
+        function liClick(e) {
+            animate(1, $(this).attr('id'));
+        }
+
+        function scrollMove(e) {
+            animate(2, $(document).scrollTop());
+        }
+
+        // type: 1-tab点击 2-滚动条
+        function animate(type, value) {
+            if (type === 1) {
+                tabAnimate(value);
+                $(document).scrollTop(value * HEIGHT);
+                return;
+            } 
+
+            var index = Math.floor(value / HEIGHT);
+
+            if (currentIndex != index) {
+                tabAnimate(index);
+            }
+        }
+
+        function tabAnimate(index) {
+            var $tab = $liList[index < $liList.length ? index : $liList.length - 1];
+            var move = $tab.offsetLeft - $tab.offsetParent.offsetLeft;
+
+            currentIndex = index;
+
+            $currList.animate({
+                marginLeft: -move
             });
+            $curr.animate({
+                left: move
+            });
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function () {
+                clearTimeout(timeout);
+                timeout = setTimeout(func, wait);
+            }
+        }
+
+        // 初始化
+        animate(1, 0);
+
+        $('.container').on('click', '.floor li', liClick);
+        $(document).on('scroll', debounce(scrollMove, 50));
     });
     </script>
-    <script type="text/javascript" src="showcode.js"></script>
 </body>
 
 </html>

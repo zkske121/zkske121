@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="myCanvas" width="200" height="200"></canvas>
+    <script>
+        // 圆心x
+        var x = 100;
+        // 圆心y
+        var y = 100;
+        // 半径
+        var r = 80;
+        // 点的半径
+        var point_r = 15;
+        // PI
+        var PI = Math.PI;
+        // 分割点数目
+        var POINT = 9;
+        // 坐标数组
+        var pointList = initPointList(x, y, r, POINT);
+
+        var c = document.getElementById("myCanvas");
+        var cxt = c.getContext("2d");
+
+
+
+        cxt.fillStyle = "#ff0000";
+        cxt.fillRect(0, 0, 200, 200);
+
+        pointList[0].targetList = [3, 7, 9];
+
+        pointList.forEach(p => {
+            p.targetList.forEach(t => {
+                var target = pointList.find(v => v.index === t);
+                drawLine(p.x, p.y, target.x, target.y, '#fff');
+            });
+            drawArc(p.x, p.y, point_r, '#fff');
+
+            cxt.globalCompositeOperation = "source-over";
+            cxt.fillStyle = "#ff0000";
+            cxt.font = '15px Arial';
+            cxt.fillText(p.index, p.x - 4, p.y + 6);
+        });
+
+        function drawLine(startX, startY, endX, endY, color) {
+            cxt.beginPath();
+            cxt.moveTo(startX, startY);
+            cxt.lineWidth = 5;
+            cxt.lineTo(endX, endY);
+            cxt.strokeStyle = color;
+            cxt.stroke();
+            cxt.closePath();
+        }
+
+        function drawArc(x, y, r, color) {
+            cxt.fillStyle = color;
+            cxt.beginPath();
+            cxt.arc(x, y, r, 0, PI * 2, true);
+            cxt.closePath();
+            cxt.fill();
+        }
+
+        // 初始化坐标列表
+        function initPointList(x, y, r, point) {
+            var ret = [];
+
+            for (var i = 1; i <= point; i++) {
+
+                var hudu = 2 * Math.PI / point * i;
+
+                var X = x + Math.sin(hudu) * r;
+
+                var Y = y - Math.cos(hudu) * r;
+
+                ret.push({
+                    index: i,
+                    x: X,
+                    y: Y,
+                    targetList: []
+                });
+            }
+
+            return ret;
+        }
+    </script>
+</body>
+</html>
