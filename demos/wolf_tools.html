@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tools</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <style>
+      body {
+        background-color: #b0e0e6;
+      }
+      .container {
+        padding: 5px;
+      }
+      .row {
+        display: flex;
+        flex-direction: row;
+      }
+      .title {
+        margin: 10px 0;
+      }
+      .btn {
+        border-radius: 35px;
+        min-width: 35px;
+        height: 30px;
+        margin: 5px;
+        border-radius: 35px;
+        display: inline-flex;
+        justify-content: center;
+        padding: 0 5px;
+        align-items: center;
+        border: 2px solid transparent;
+      }
+      .number {
+        background-color: white;
+        color: black;
+      }
+      .people {
+        background-color: yellowgreen;
+        color: white;
+      }
+      .wolf {
+        background-color: white;
+        color: red;
+      }
+      .god {
+        background-color: #ffd700;
+        color: red;
+      }
+      .select {
+        border: 2px solid red;
+      }
+      .margin-top-20 {
+        margin-top: 20px;
+      }
+      .margin-bottom-10 {
+        margin-bottom: 10px;
+      }
+      .margin-bottom-5 {
+        margin-bottom: 5px;
+      }
+      .flex {
+        display: flex;
+      }
+      .flex-1 {
+        flex: 1;
+      }
+      .row {
+        display: flex;
+        flex-direction: row;
+      }
+      .column {
+        display: flex;
+        flex-direction: column;
+      }
+      .width-200 {
+        width: 200px;
+      }
+      .width-260 {
+        width: 260px;
+      }
+      .overflow-auto {
+        overflow: auto;
+      }
+      .height-full {
+        height: 100%;
+      }
+      .min-width-100 {
+        min-width: 100px;
+      }
+      .absolute-full {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+      .padding-5 {
+        padding: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script type="text/babel">
+      const { useState, useRef } = React;
+      const NUMBERS = genArray(15);
+      const GODS = [
+        '预言家',
+        '女巫',
+        '猎人',
+        '白痴',
+        '猎魔人',
+        '摄梦人',
+        '守墓人',
+        '野孩子',
+        '训熊师',
+        '禁言长老',
+        '魔术师',
+        '骑士',
+        '乌鸦',
+        '守卫',
+      ];
+      const WOLFS = [
+        '狼',
+        '狼',
+        '狼',
+        '狼',
+        '狼王',
+        '白狼王',
+        '血月使徒',
+        '隐狼',
+        '石像鬼',
+        '狼美人',
+        '恶灵骑士',
+        '噩梦之影',
+      ];
+      const PEOPLE = [
+        '民',
+        '民',
+        '民',
+        '民',
+        '老流氓',
+        '炸弹人',
+        '丘比特',
+        '盗贼',
+      ];
+      const GOD_TITLE = '神';
+      const PEOPLE_TITLE = '民';
+      const WOLF_TITLE = '狼';
+
+      let currentDay = 1;
+
+      const BtnType = {
+        number: 'number',
+        people: 'people',
+        god: 'god',
+        wolf: 'wolf',
+      };
+
+      const Skill = {
+        预言家: ['查'],
+        女巫: ['救', '毒'],
+        猎人: ['枪'],
+        白痴: ['翻牌'],
+        守墓人: ['墓'],
+        骑士: ['决斗'],
+        守卫: ['守'],
+        狼: ['刀', '爆'],
+        狼王: ['枪'],
+        白狼王: ['爆', '枪'],
+        血月使徒: ['爆', '诈尸'],
+        猎魔人: ['狩猎'],
+        摄梦人: ['梦'],
+        野孩子: ['榜样'],
+        训熊师: ['咆哮'],
+        禁言长老: ['禁'],
+        炸弹人: ['炸'],
+        魔术师: ['交换'],
+        石像鬼: ['查验'],
+        狼美人: ['魅惑'],
+        丘比特: ['情侣'],
+        恶灵骑士: ['反伤'],
+        盗贼: ['偷牌'],
+        乌鸦: ['诅咒'],
+        噩梦之影: ['恐惧'],
+      };
+
+      const CommonSkill = ['投', '票', '上警', '警长', '撕警徽', '出局'];
+      const DayOption = ['第x天', '晚上', '白天'];
+
+      class Tools extends React.Component {
+        render() {
+          return <App />;
+        }
+      }
+
+      function App() {
+        const [store, setStore] = useState({
+          isInit: true,
+          gods: [],
+          people: [],
+          wolf: [],
+        });
+        const { isInit, gods, people, wolf } = store;
+
+        if (isInit) {
+          return <InitSetting setStore={setStore} />;
+        }
+
+        return <Main gods={gods} people={people} wolf={wolf} />;
+      }
+
+      function InitSetting({ setStore }) {
+        const [gods, setGods] = useState([]);
+        const [people, setPeople] = useState([]);
+        const [wolf, setWolfs] = useState([]);
+
+        const onPressHandler = () => {
+          setStore({
+            isInit: false,
+            gods,
+            people,
+            wolf,
+          });
+        };
+
+        return (
+          <div className='container'>
+            <div>请勾选身份设置板子:</div>
+            <div className='title margin-top-20'>{GOD_TITLE}:</div>
+            <SelectList
+              list={GODS}
+              type={BtnType.god}
+              setSelectResult={setGods}
+            />
+
+            <div className='title'>{PEOPLE_TITLE}:</div>
+            <SelectList
+              list={PEOPLE}
+              type={BtnType.people}
+              setSelectResult={setPeople}
+            />
+
+            <div className='title'>{WOLF_TITLE}:</div>
+            <SelectList
+              list={WOLFS}
+              type={BtnType.wolf}
+              setSelectResult={setWolfs}
+            />
+
+            <div className='margin-top-20'>
+              {gods.length ? `${gods.length}${GOD_TITLE}` : ''}
+              {people.length ? `${people.length}${PEOPLE_TITLE}` : ''}
+              {wolf.length ? `${wolf.length}${WOLF_TITLE}` : ''}
+            </div>
+
+            <div className='margin-top-20'>
+              {`总计:${gods.length + people.length + wolf.length}人`}
+            </div>
+
+            <div className='margin-top-20'>
+              <Btn
+                content={'确定'}
+                onPress={onPressHandler}
+                type={BtnType.people}
+              />
+            </div>
+          </div>
+        );
+      }
+
+      function Main({ gods, people, wolf }) {
+        const FREE = '';
+        const [operate, setOperate] = useState(FREE);
+        const [record, setRecord] = useState([]);
+
+        const numbers = genArray([].concat(gods, people, wolf).length);
+
+        const getRenderOperateByType = type => {
+          return (v, i) => {
+            const onPressHandler = () => {
+              setOperate(operate === v ? FREE : v);
+            };
+            return (
+              <Btn
+                key={v + i}
+                content={v}
+                type={type}
+                select={operate === v}
+                onPress={onPressHandler}
+              />
+            );
+          };
+        };
+
+        const renderNumber = (v, i) => {
+          const onPressHandler = () => {
+            if (operate === FREE) {
+              return;
+            }
+
+            setRecord(record.concat(`${operate}->${v}`));
+          };
+
+          return (
+            <Btn
+              key={v + i}
+              content={v}
+              type={BtnType.number}
+              select={false}
+              onPress={onPressHandler}
+            />
+          );
+        };
+
+        const renderRecord = (v, i) => {
+          return (
+            <div key={v + i} className='margin-bottom-5'>
+              {v}
+            </div>
+          );
+        };
+
+        const renderDayOption = (v, i) => {
+          const onPressHandler = () => {
+            setRecord(record.concat(getDayInfo(v)));
+          };
+
+          return (
+            <Btn
+              key={v + i}
+              content={v}
+              type={BtnType.people}
+              select={false}
+              onPress={onPressHandler}
+            />
+          );
+        };
+
+        const Revert = () => {
+          const onPressHandler = () => {
+            record.pop();
+            setRecord(record);
+          };
+
+          return (
+            <Btn
+              content={'撤回'}
+              type={BtnType.people}
+              select={false}
+              onPress={onPressHandler}
+            />
+          );
+        };
+
+        const ClearUp = () => {
+          const onPressHandler = () => {
+            setRecord([]);
+          };
+
+          return (
+            <Btn
+              content={'清空'}
+              type={BtnType.people}
+              select={false}
+              onPress={onPressHandler}
+            />
+          );
+        };
+
+        return (
+          <div className='row absolute-full padding-5'>
+            <div className='min-width-100 height-full overflow-auto'>
+              <div className='margin-bottom-10'>记录:</div>
+              {record.map(renderRecord)}
+            </div>
+            <div className='flex-1 overflow-auto'>
+              <div>
+                {Revert()}
+                {ClearUp()}
+              </div>
+              <div>
+                {DayOption.map(renderDayOption)}
+              </div>
+              <div>
+                {getIdentity(gods, people, wolf).map(
+                  getRenderOperateByType(BtnType.number)
+                )}
+              </div>
+              <div>
+                {getSkillByIdentity(wolf).map(
+                  getRenderOperateByType(BtnType.wolf)
+                )}
+              </div>
+              <div>
+                {getSkillByIdentity(gods).map(
+                  getRenderOperateByType(BtnType.god)
+                )}
+              </div>
+              <div>
+                {CommonSkill.map(getRenderOperateByType(BtnType.people))}
+              </div>
+              <div>{numbers.map(renderNumber)}</div>
+            </div>
+          </div>
+        );
+      }
+
+      function SelectList({ list, type, setSelectResult }) {
+        const [selectList, setSelectList] = useState(list.map(v => [v, false]));
+
+        const renderItem = ([value, isSelected], index) => {
+          const onPressHandler = () => {
+            const newList = selectList.map(([v, oldSelected], i) =>
+              i === index ? [v, !isSelected] : [v, oldSelected]
+            );
+            setSelectList(newList);
+
+            // 同步每一次的结果给外部
+            setSelectResult(
+              newList.filter(([_v, select]) => !!select).map(([v]) => v)
+            );
+          };
+
+          return (
+            <Btn
+              key={value + index}
+              content={value}
+              type={type}
+              select={isSelected}
+              onPress={onPressHandler}
+            />
+          );
+        };
+
+        return selectList.map(renderItem);
+      }
+
+      function Btn({ content, onPress, type, select }) {
+        return (
+          <div
+            className={`btn ${select ? 'select' : ''} ${type}`}
+            onClick={onPress}
+          >
+            {content}
+          </div>
+        );
+      }
+
+      function arrayUnique(ary) {
+        return Array.from(new Set(ary));
+      }
+
+      function getIdentity(gods, people, wolf) {
+        return arrayUnique([].concat(gods, people, wolf));
+      }
+
+      function getSkillByIdentity(identity) {
+        return arrayUnique(
+          identity
+            .reduce(
+              (ret, item) => ret.concat(item in Skill ? Skill[item] : []),
+              []
+            )
+            .filter(v => !!v)
+        );
+      }
+
+      function getDayInfo(value) {
+        const DAY_NUMBER = '零一二三四五六七八九十';
+
+        if (value.includes('x')) {
+          return value.replace('x', DAY_NUMBER.charAt(currentDay++));
+        }
+
+        return value;
+      }
+
+      function genArray(count) {
+        return new Array(count)
+          .join('-')
+          .split('-')
+          .map((_v, i) => i + 1);
+      }
+
+      ReactDOM.render(<Tools />, document.getElementById('app'));
+    </script>
+  </body>
+</html>
