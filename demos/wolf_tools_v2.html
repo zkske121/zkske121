@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tools</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <style>
+      body {
+        background-color: #b0e0e6;
+      }
+      .container {
+        padding: 5px;
+      }
+      .row {
+        display: flex;
+        flex-direction: row;
+      }
+      .title {
+        margin: 10px 0;
+      }
+      .btn {
+        border-radius: 35px;
+        min-width: 35px;
+        height: 30px;
+        margin: 5px;
+        border-radius: 35px;
+        display: inline-flex;
+        justify-content: center;
+        padding: 0 5px;
+        align-items: center;
+        border: 2px solid transparent;
+      }
+      .number {
+        background-color: white;
+        color: black;
+      }
+      .third {
+        background-color: white;
+        color: black;
+      }
+      .poor {
+        background-color: yellowgreen;
+        color: white;
+      }
+      .wolf {
+        background-color: white;
+        color: red;
+      }
+      .god {
+        background-color: #ffd700;
+        color: red;
+      }
+      .select {
+        border: 2px solid red;
+      }
+      .margin-top-20 {
+        margin-top: 20px;
+      }
+      .margin-bottom-10 {
+        margin-bottom: 10px;
+      }
+      .margin-bottom-5 {
+        margin-bottom: 5px;
+      }
+      .flex {
+        display: flex;
+      }
+      .flex-1 {
+        flex: 1;
+      }
+      .row {
+        display: flex;
+        flex-direction: row;
+      }
+      .column {
+        display: flex;
+        flex-direction: column;
+      }
+      .width-200 {
+        width: 200px;
+      }
+      .width-260 {
+        width: 260px;
+      }
+      .overflow-auto {
+        overflow: auto;
+      }
+      .height-full {
+        height: 100%;
+      }
+      .min-width-100 {
+        min-width: 100px;
+      }
+      .absolute-full {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+      .padding-5 {
+        padding: 5px;
+      }
+      .align-items-center {
+        align-items: center;
+      }
+      .margin-bottom-100 {
+        margin-bottom: 100px;
+      }
+      .row-reverse {
+        display: flex;
+        flex-direction: row-reverse;
+      }
+      .height-44 {
+        height: 44px;
+      }
+      .border-1 {
+        border: solid 1px red;
+      }
+      .justify-content-center {
+        justify-content: center;
+      }
+      .flex-wrap-wrap {
+        flex-wrap: wrap;
+      }
+      .record-id {
+        background-color: red;
+        color: white;
+        border-radius: 15px;
+        padding: 5px;
+        margin: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="text/javascript">
+      const GOD = [
+        ["预言家", "查"],
+        ["女巫", "救", "毒"],
+        ["猎人", "枪"],
+        ["白痴", "翻牌"],
+        ["守墓人", "墓"],
+        ["骑士", "决斗"],
+        ["守卫", "守"],
+        ["猎魔人", "狩猎"],
+        ["摄梦人", "梦"],
+        ["训熊师", "咆哮"],
+        ["禁言长老", "禁"],
+        ["魔术师", "交换"],
+        ["乌鸦", "诅咒"],
+      ];
+      const POOR = [["民"], ["民"], ["民"], ["民"], ["民"], ["混子", "混"]];
+      const THIRD = [
+        ["野孩子", "榜样"],
+        ["炸弹人", "炸"],
+        ["丘比特", "情侣"],
+        ["盗贼", "偷牌"],
+      ];
+      const WOLF = [
+        ["狼", "刀", "爆"],
+        ["狼", "刀", "爆"],
+        ["狼", "刀", "爆"],
+        ["狼", "刀", "爆"],
+        ["狼", "刀", "爆"],
+        ["狼王", "枪"],
+        ["白狼王", "爆", "枪"],
+        ["血月使徒", "爆+封印", "诈尸"],
+        ["石像鬼", "查验"],
+        ["狼美人", "魅惑"],
+        ["恶灵骑士", "反伤"],
+        ["噩梦之影", "恐惧"],
+      ];
+    </script>
+    <script>
+      const BTN_TYPE = {
+        number: "number",
+        poor: "poor",
+        god: "god",
+        wolf: "wolf",
+      };
+
+      const APP_STATUS = {
+        init: "init",
+        oprate: "oprate",
+        show_record: "show_record",
+      };
+
+      const COMMON_SKILL = ["投", "上警", "警长", "撕", "出局"];
+
+      const HTML_HEIGHT = document.documentElement.clientHeight;
+      // clientHeight - padding * 2 - RecordOption Height - NumberArea Height * 2 - empty
+      const SCROLL_AREA_HEIGHT = HTML_HEIGHT - 5 * 2 - 44 - 44 * 2 - 20;
+
+      function getContentForRender(content) {
+        return content.reduce((prev, next) => prev + " " + next, "");
+      }
+
+      function genArray(count) {
+        return new Array(count)
+          .join("-")
+          .split("-")
+          .map((_v, i) => i + 1);
+      }
+
+      function arrayUnique(ary) {
+        return Array.from(new Set(ary));
+      }
+
+      function uniqueIdentity(ary) {
+        if (ary.length === 0) {
+          return [];
+        }
+        const tmp = ary.map((v) => v.reduce((p, n) => p + "-" + n));
+        return arrayUnique(tmp).map((v) => v.split("-"));
+      }
+
+      function noRepeat(arr) {
+        var ret = arr.slice(),
+          item,
+          tmp;
+        for (var i = 0; i < ret.length; i++) {
+          item = ret[i];
+          tmp = i + 1;
+          while ((tmp = ret.indexOf(item, tmp)) > -1) ret.splice(tmp, 1);
+        }
+        return ret;
+      }
+
+      function flatArray(arr) {
+        var res = arr.slice(),
+          tmp;
+        for (var i = 0; i < res.length; i++) {
+          tmp = res[i];
+          if (tmp instanceof Array) {
+            Array.prototype.splice.apply(res, [i--, 1].concat(tmp));
+          }
+        }
+
+        return res;
+      }
+    </script>
+    <script type="text/babel">
+      const { useState, useRef } = React;
+
+      console.log(arrayUnique(POOR));
+
+      class Tools extends React.Component {
+        render() {
+          return <App />;
+        }
+      }
+
+      function App() {
+        const [status, setStatus] = useState(APP_STATUS.init);
+        const [record, setRecord] = useState([]);
+        const [store, setStore] = useState({
+          god: [],
+          poor: [],
+          wolf: [],
+          third: [],
+        });
+
+        const { god, poor, wolf, third } = store;
+
+        switch (status) {
+          case APP_STATUS.oprate:
+            return (
+              <Main
+                setStatus={setStatus}
+                god={god}
+                poor={poor}
+                wolf={wolf}
+                third={third}
+                record={record}
+                setRecord={setRecord}
+              />
+            );
+          case APP_STATUS.show_record:
+            return <RecordList setStatus={setStatus} record={record} />;
+          case APP_STATUS.init:
+          default:
+            return <InitSetting setStatus={setStatus} setStore={setStore} />;
+        }
+      }
+
+      function InitSetting({ setStore, setStatus }) {
+        const [god, setGod] = useState([]);
+        const [poor, setPoor] = useState([]);
+        const [wolf, setWolf] = useState([]);
+        const [third, setThird] = useState([]);
+
+        const onPressHandler = () => {
+          setStore({
+            god,
+            poor,
+            wolf,
+            third,
+          });
+
+          setStatus(APP_STATUS.oprate);
+        };
+
+        return (
+          <div className="container">
+            <div className="row align-items-center">
+              请勾选身份设置板子:
+              <Btn
+                content={"确定"}
+                onPress={onPressHandler}
+                type={BTN_TYPE.poor}
+              />
+            </div>
+            <SelectList
+              list={GOD}
+              type={BTN_TYPE.god}
+              setSelectResult={setGod}
+            />
+            <SelectList
+              list={POOR}
+              type={BTN_TYPE.poor}
+              setSelectResult={setPoor}
+            />
+            <SelectList
+              list={WOLF}
+              type={BTN_TYPE.wolf}
+              setSelectResult={setWolf}
+            />
+            <SelectList
+              list={THIRD}
+              type={BTN_TYPE.poor}
+              setSelectResult={setPoor}
+            />
+          </div>
+        );
+      }
+
+      function Main({ setStatus, god, poor, wolf, third, record, setRecord }) {
+        const [content, setContent] = useState([]);
+        const count = god.length + poor.length + wolf.length + third.length;
+
+        return (
+          <div className="row padding-5 column">
+            <RecordOption
+              content={content}
+              setContent={setContent}
+              setRecord={setRecord}
+            />
+            <NumberArea count={count} setContent={setContent} />
+            <OprateArae
+              record={record}
+              setStatus={setStatus}
+              setRecord={setRecord}
+              god={god}
+              poor={poor}
+              wolf={wolf}
+              third={third}
+              setContent={setContent}
+            />
+          </div>
+        );
+      }
+
+      function RecordOption({ content, setContent, setRecord }) {
+        const onRecord = () => {
+          if (content.length === 0) {
+            return;
+          }
+
+          const info = getContentForRender(content);
+          setRecord((record) => record.concat(info));
+          setContent([]);
+        };
+
+        const onDelete = () => {
+          content.pop();
+          setContent(content);
+        };
+
+        return (
+          <div className="row align-items-center height-44">
+            <div className="flex-1">
+              {content.length
+                ? getContentForRender(content)
+                : "请按选择需要执行的操作"}
+            </div>
+            <div className="min-width-100">
+              <Btn
+                content={"删"}
+                type={BTN_TYPE.poor}
+                select={false}
+                onPress={onDelete}
+              />
+              <Btn
+                content={"确认"}
+                type={BTN_TYPE.poor}
+                select={false}
+                onPress={onRecord}
+              />
+            </div>
+          </div>
+        );
+      }
+
+      function RecordArea({ record }) {
+        const renderRecord = (v, i) => {
+          return <div key={v + i}>{v}</div>;
+        };
+
+        return (
+          <div
+            className="min-width-100 overflow-auto"
+            style={{ height: SCROLL_AREA_HEIGHT }}
+          >
+            <div className="margin-bottom-10">记录:</div>
+            {record.map(renderRecord)}
+            <div className="margin-bottom-100" />
+          </div>
+        );
+      }
+
+      function OprateArae({
+        record,
+        setStatus,
+        setRecord,
+        content,
+        setContent,
+        god,
+        poor,
+        wolf,
+        third,
+      }) {
+        const [days, setDays] = useState(1);
+        const onShowRecord = () => {
+          setStatus(APP_STATUS.show_record);
+        };
+
+        const onClear = () => {
+          setRecord([]);
+          setDays(1);
+        };
+
+        const onDay = () => {
+          setRecord((record) => record.concat("白天---"));
+        };
+
+        const onNight = () => {
+          setRecord((record) => record.concat(`---第${days}天---`, "晚上---"));
+          setDays(days + 1);
+        };
+
+        const renderItemByType = (type) => (value, index) => {
+          const renderIdentity = (item, i) => {
+            return (
+              <Oprate
+                key={item + i}
+                value={item}
+                type={type}
+                setContent={setContent}
+              />
+            );
+          };
+          return (
+            <div key={value + index} className="row-reverse flex-wrap-wrap">
+              {value.map(renderIdentity)}
+            </div>
+          );
+        };
+
+        const renderCommonSkill = (item, i) => (
+          <Oprate
+            key={item + i}
+            value={item}
+            type={BTN_TYPE.number}
+            setContent={setContent}
+          />
+        );
+
+        return (
+          <div className="row">
+            <RecordArea record={record} />
+            <div className="column flex-1">
+              <div className="row-reverse flex-wrap-wrap">
+                <Btn
+                  content={"白天"}
+                  type={BTN_TYPE.poor}
+                  select={false}
+                  onPress={onDay}
+                />
+                <Btn
+                  content={"晚上"}
+                  type={BTN_TYPE.poor}
+                  select={false}
+                  onPress={onNight}
+                />
+              </div>
+              <div className="row-reverse flex-wrap-wrap">
+                {COMMON_SKILL.map(renderCommonSkill)}
+              </div>
+              {uniqueIdentity(god).map(renderItemByType(BTN_TYPE.god))}
+              {uniqueIdentity(poor).map(renderItemByType(BTN_TYPE.number))}
+              {uniqueIdentity(wolf).map(renderItemByType(BTN_TYPE.wolf))}
+              {uniqueIdentity(third).map(renderItemByType(BTN_TYPE.poor))}
+              <div className="row-reverse flex-wrap-wrap">
+                <Btn
+                  content={"复盘"}
+                  type={BTN_TYPE.poor}
+                  select={false}
+                  onPress={onShowRecord}
+                />
+                <Btn
+                  content={"清空"}
+                  type={BTN_TYPE.poor}
+                  select={false}
+                  onPress={onClear}
+                />
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      function NumberArea({ count, setContent }) {
+        const renderNumberItem = (v, i) => {
+          return (
+            <Oprate
+              key={v + i}
+              value={v}
+              type={BTN_TYPE.number}
+              setContent={setContent}
+            />
+          );
+        };
+
+        return (
+          <div className="row flex-wrap-wrap">
+            {genArray(count).map(renderNumberItem)}
+          </div>
+        );
+      }
+
+      function Oprate({ value, type, setContent }) {
+        const onOprate = () => {
+          setContent((content) => content.concat(value));
+        };
+
+        return (
+          <Btn content={value} type={type} select={false} onPress={onOprate} />
+        );
+      }
+
+      function RecordList({ setStatus, record }) {
+        const onPressHandler = () => {
+          setStatus(APP_STATUS.oprate);
+        };
+
+        const renderRecordItem = (v, i) => {
+          return (
+            <div key={v + i} className="row align-items-center">
+              <div className="record-id">{i + 1}: </div>
+              {v}
+            </div>
+          );
+        };
+
+        return (
+          <div className="container">
+            <div className="row align-items-center ">
+              操作日志：
+              <Btn
+                content="返回"
+                type={BTN_TYPE.poor}
+                onPress={onPressHandler}
+              />
+            </div>
+            <div>{record.map(renderRecordItem)}</div>
+          </div>
+        );
+      }
+
+      function SelectList({ list, type, setSelectResult }) {
+        const [selectList, setSelectList] = useState(
+          list.map((v) => [v, false])
+        );
+
+        const renderItem = ([value, isSelected], index) => {
+          const onPressHandler = () => {
+            const newList = selectList.map(([v, oldSelected], i) =>
+              i === index ? [v, !isSelected] : [v, oldSelected]
+            );
+            setSelectList(newList);
+
+            // 同步每一次的结果给外部
+            setSelectResult(
+              newList.filter(([_v, select]) => !!select).map(([v]) => v)
+            );
+          };
+
+          return (
+            <Btn
+              key={value[0] + index}
+              content={value[0]}
+              type={type}
+              select={isSelected}
+              onPress={onPressHandler}
+            />
+          );
+        };
+
+        return (
+          <div className="row flex-wrap-wrap">{selectList.map(renderItem)}</div>
+        );
+      }
+
+      function Btn({ content, onPress, type, select }) {
+        return (
+          <div
+            className={`btn ${select ? "select" : ""} ${type}`}
+            onClick={onPress}
+          >
+            {content}
+          </div>
+        );
+      }
+
+      ReactDOM.render(<Tools />, document.getElementById("app"));
+    </script>
+  </body>
+</html>
