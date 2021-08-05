@@ -248,8 +248,6 @@
     <script type="text/babel">
       const { useState, useRef } = React;
 
-      console.log(arrayUnique(POOR));
-
       class Tools extends React.Component {
         render() {
           return <App />;
@@ -352,7 +350,7 @@
               setRecord={setRecord}
             />
             <NumberArea count={count} setContent={setContent} />
-            <OprateArae
+            <OperateArea
               record={record}
               setStatus={setStatus}
               setRecord={setRecord}
@@ -378,8 +376,7 @@
         };
 
         const onDelete = () => {
-          content.pop();
-          setContent(content);
+          setContent(content => content.slice(0, content.length - 1));
         };
 
         return (
@@ -424,7 +421,7 @@
         );
       }
 
-      function OprateArae({
+      function OperateArea({
         record,
         setStatus,
         setRecord,
@@ -452,6 +449,18 @@
         const onNight = () => {
           setRecord((record) => record.concat(`---第${days}天---`, "晚上---"));
           setDays(days + 1);
+        };
+
+        const onDelete = () => {
+            setRecord((record) => record.slice(0, record.length - 1));
+        };
+
+        const onAddDay = () => {
+            setDays(v => v + 1);
+        };
+
+        const onSubDay = () => {
+            setDays(v => v - 1 || 1);
         };
 
         const renderItemByType = (type) => (value, index) => {
@@ -487,16 +496,16 @@
             <div className="column flex-1">
               <div className="row-reverse flex-wrap-wrap">
                 <Btn
-                  content={"白天"}
-                  type={BTN_TYPE.poor}
-                  select={false}
-                  onPress={onDay}
-                />
-                <Btn
                   content={"晚上"}
                   type={BTN_TYPE.poor}
                   select={false}
                   onPress={onNight}
+                />
+                <Btn
+                  content={"白天"}
+                  type={BTN_TYPE.poor}
+                  select={false}
+                  onPress={onDay}
                 />
               </div>
               <div className="row-reverse flex-wrap-wrap">
@@ -508,16 +517,42 @@
               {uniqueIdentity(third).map(renderItemByType(BTN_TYPE.poor))}
               <div className="row-reverse flex-wrap-wrap">
                 <Btn
-                  content={"复盘"}
+                  content={"-"}
                   type={BTN_TYPE.poor}
                   select={false}
-                  onPress={onShowRecord}
+                  onPress={onSubDay}
+                />
+                <Btn
+                  content={`第${days}天`}
+                  type={BTN_TYPE.poor}
+                  select={false}
+                  onPress={() => {}}
+                />
+                <Btn
+                  content={"+"}
+                  type={BTN_TYPE.poor}
+                  select={false}
+                  onPress={onAddDay}
+                />
+              </div>
+              <div className="row-reverse flex-wrap-wrap">
+                <Btn
+                  content={"回退"}
+                  type={BTN_TYPE.poor}
+                  select={false}
+                  onPress={onDelete}
                 />
                 <Btn
                   content={"清空"}
                   type={BTN_TYPE.poor}
                   select={false}
                   onPress={onClear}
+                />
+                <Btn
+                  content={"复盘"}
+                  type={BTN_TYPE.poor}
+                  select={false}
+                  onPress={onShowRecord}
                 />
               </div>
             </div>
