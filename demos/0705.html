@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>calc</title>
+  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+
+  <style>
+    .container {
+      margin-top: 50px;
+      margin-left: 50px;
+    }
+
+    .m-t-20 {
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 2px 3px;
+      margin-left: 5px;
+      border: 1px solid #999;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script type="text/babel">
+    const { useState, useEffect, Component } = React;
+    class App extends Component {
+      render() {
+        return (
+          <div>
+            <Container />
+          </div>
+        );
+      }
+    }
+    ReactDOM.render(<App />, document.getElementById('app'));
+
+    let id = 0;
+    function Container() {
+      const [list, setList] = useState([]);
+      const [productName, setProductName] = useState(getDefaultProductName());
+      const [base, setBase] = useState({ name: "base value", value: 1000, type: 3 });
+      const [skill, setSkill] = useState({ name: "skill value", value: 200, type: 4 });
+      const AList = list.filter(v => v.type === 1);
+      const BList = list.filter(v => v.type === 2);
+      const totalNumberList = [base.value, calc(skill.value), getListTotal(AList, false), getListTotal(BList, true)];
+      const total = Math.ceil(totalNumberList.reduce((p, n) => p * n));
+
+      useEffect(() => {
+      }, []);
+
+      const onConfirm = () => {
+        alert("on confirm");
+      }
+
+      const onAddTypA = () => {
+        const newList = list.concat({
+          id,
+          name: `type-a-${id++}`,
+          value: 10,
+          type: 1
+        });
+
+        setList(newList);
+      }
+
+      const onAddTypB = () => {
+        const newList = list.concat({
+          id,
+          name: `type-b-${id++}`,
+          value: 10,
+          type: 2
+        });
+
+        setList(newList);
+      }
+
+      const renderItem = (v, i) => {
+        const { id, name, value, type } = v;
+        const update = (newData) => {
+          setList(last => last.map(lastItem => {
+            if (lastItem.id === id) {
+              return {
+                ...lastItem,
+                ...newData
+              };
+            }
+
+            return lastItem
+          }));
+        }
+
+        const onDelete = () => {
+          setList(last => last.filter(lastItem => lastItem.id !== v.id));
+        };
+
+        return <Item key={id + name} initName={name} initValue={value} update={update} onDelete={onDelete} type={type} />
+      }
+
+      return (
+        <div className="container">
+          <div><ItemForOther data={base} setData={setBase} /></div>
+          <div><ItemForOther data={skill} setData={setSkill} /></div>
+          <div className="m-t-20">
+            A type: 
+            {AList.map(renderItem)}
+            <div className="m-t-20"><span className="btn" onClick={onAddTypA}>add one</span></div>
+          </div>
+          <div className="m-t-20">
+            B type:
+            {BList.map(renderItem)}
+            <div className="m-t-20"><span className="btn" onClick={onAddTypB}>add one</span></div>
+          </div>
+          <div className="m-t-20">
+            total:
+            <div>
+              <span>{[base.value, `(1 + ${skill.value / 100})`, getListStr(AList), getListStr(BList, true)].filter(v => !!v).join(" x ")}</span>
+              <span> = {total}</span>
+            </div>
+            <SaveProduct productName={productName} setProductName={setProductName} onConfirm={onConfirm} />
+          </div>
+        </div>
+      );
+    }
+
+    function SaveProduct({ productName, setProductName, onConfirm }) {
+      const [mode, setMode] = useState(0);
+      const isModify = mode === 1;
+
+      const onSave = () => {
+        setMode(0);
+        onConfirm();
+      };
+
+      const onModify = () => {
+        setMode(1);
+      };
+
+      if (isModify) {
+        return (
+          <div className="m-t-20">
+              product name: <input onChange={setProductName} value={productName} />
+              <span className="btn" onClick={onSave}>done</span>
+          </div>
+        );
+      }
+
+      return (
+        <div className="m-t-20">
+            product name: {productName}
+            <span className="btn" onClick={onModify}>modify</span>
+            <span className="btn" onClick={onSave}>save product</span>
+        </div>
+      );
+    }
+
+    function ItemForOther({ data, setData }) {
+      const { name, value, type } = data;
+
+      const update = (newData) => {
+        setData({
+          ...data,
+          ...newData
+        });
+      }
+
+      return <Item name={name} initName={name} initValue={value} update={update} type={type} />;
+    }
+
+    function Item({ initName, initValue, update, onDelete, type }) {
+      const [name, setName] = useState(initName);
+      const [value, setValue] = useState(initValue);
+      const [mode, setMode] = useState(0);
+      const isModify = mode === 1;
+      const isBase = type === 3;
+
+      const onModify = () => {
+        setMode(1);
+      }
+
+      const onDone = () => {
+        setMode(0);
+        update({ name, value });
+      }
+
+      const onNameChange = (e) => {
+        const newName = e.target.value;
+        setName(newName);
+      }
+
+      const onValueChange = (e) => {
+        const newValue = parseInt(e.target.value);
+        setValue(newValue);
+      }
+
+      const renderTag = () => {
+        if (isBase) {
+          return null;
+        };
+
+        return <span>%</span>;
+      }
+
+      if (isModify) {
+        return (
+          <div className="m-t-20">
+            <div>name: <input onChange={onNameChange} value={name} /></div>
+            <div>value: <input onChange={onValueChange} value={value} />
+              <span className="btn" onClick={onDone}>done</span></div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="m-t-20">
+          <span>{name}:{value}{renderTag()}</span>
+          <span className="btn" onClick={onModify}>modify</span>
+          {onDelete ? <span className="btn" onClick={onDelete}>delete</span> : null}
+        </div>
+      );
+    }
+
+    function getListTotal(list, isMore = false) {
+      if (!list || !list.length) {
+        return 1;
+      }
+
+      if (isMore) {
+        return list.reduce((t, n) => t * calc(n.value), 1);
+      }
+
+      return calc(list.reduce((t, n) => t + n.value, 0));
+    }
+
+    function getListStr(list, isMore = false) {
+      if (!list || !list.length) {
+        return "";
+      }
+
+      if (isMore) {
+        return list.map(v => `(1 + ${v.value / 100})`).join(" x ")
+      }
+
+      const tmp = list.map(v => v.value / 100).join(" + ");
+      return `(1 + ${tmp})`;
+    }
+
+    function calc(percentage) {
+      return 1 + (percentage / 100);
+    }
+
+    function getDefaultProductName() {
+      const date = new Date();
+      return [date.getFullYear(), date.getMonth() + 1, date.getDate(), String(date.getTime()).slice(-4)].join("-");
+    }
+  </script>
+</body>
+
+</html>
