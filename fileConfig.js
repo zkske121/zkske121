@@ -90,4 +90,8 @@ var fileConfig = [{
     id: 2,
     title: '2048',
     href: './demos/2048.html'
+}, {
+    id: 2,
+    title: '生成随机密码',
+    href: './demos/random_password.html'
 }];
