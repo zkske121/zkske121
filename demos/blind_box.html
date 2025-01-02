@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>抽盲盒</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .hide {
+      .modal-container {
+        display: none;
+      }
+    }
+
+    .show {
+      .modal-container {
+        display: flex;
+      }
+    }
+
+    #container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .open-box-btn {
+      background: url('https://dimg04.c-ctrip.com/images/1ro1m12000gdku79hD2F3.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      width: 205px;
+      height: 71px;
+      line-height: 71px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      color: #ffffff;
+    }
+
+    .phone-container {
+      width: 368px;
+      height: 750px;
+      background: url('https://dimg04.c-ctrip.com/images/0wy3x12000cdne8yb9983.png');
+    }
+
+    .content-container {
+      margin: 18px;
+      position: relative;
+      width: 332px;
+      height: 716px;
+      border-radius: 46px;
+      overflow: hidden;
+      background-color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .absolute-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .box-img {
+      width: 141px;
+      height: auto;
+      animation: ani-box-show 1s ease-in-out,
+        ani-shake 2s ease-in-out 1s forwards,
+        ani-hide 0.5s ease-in-out 6.5s forwards;
+    }
+
+    .box-title-img {
+      width: 205px;
+      height: auto;
+      transform: translateY(-130px);
+      opacity: 0;
+      animation: ani-box-title-show 0.5s ease-in-out 2s forwards,
+        ani-hide 0.5s ease-in-out 6.5s forwards;
+    }
+
+    .box-bg1-img {
+      width: 319px;
+      height: auto;
+      z-index: 1;
+      opacity: 0;
+    }
+
+    .box-bg2-img {
+      width: 995px;
+      height: auto;
+      z-index: 1;
+      animation: ani-box-light 2s ease-in-out forwards,
+        ani-hide 2s ease-in-out 1s forwards;
+    }
+
+    .box-bg3-img {
+      width: 498px;
+      height: auto;
+      z-index: 2;
+      animation: ani-box-bg 3s ease-in-out forwards,
+        ani-hide 2s ease-in-out 1s forwards;
+    }
+
+    .box-content {
+      position: absolute;
+      top: 51%;
+      left: 0;
+      right: 0;
+      z-index: 4;
+      background-image: url('https://dimg04.c-ctrip.com/images/1ro2t12000gdjs7erBCD6.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      opacity: 0;
+      animation: ani-box-content-show 0.3s ease-in-out 2s forwards,
+        ani-hide 0.5s ease-in-out 6.5s forwards;
+    }
+
+    .city-list {
+      width: 100%;
+      height: 96px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      animation: ani-city-move 3.8s ease-in-out 2.5s forwards;
+    }
+
+    .city-item {
+      flex-shrink: 0;
+      width: 75px;
+      height: 59px;
+      display: flex;
+      margin: 0 5px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+    }
+
+    .city-item-content {
+      width: 75px;
+      height: 59px;
+      font-size: 15px;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 3;
+      border-radius: 25px;
+    }
+
+    .city-item-bg-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      border-radius: 25px;
+    }
+  </style>
+  <style>
+    .result-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+      opacity: 0;
+      animation: ani-result-show 0.5s ease-in-out 6.5s forwards;
+    }
+
+    .result-title-container {
+      width: 313px;
+      height: 127px;
+      margin-bottom: -1px;
+      background: url(https://dimg04.c-ctrip.com/images/1ro2012000gdjsq4c437F.png);
+      background-size: contain;
+      background-repeat: no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .result-content-container {
+      background-color: #e6f8ff;
+      border-radius: 38px;
+      width: 273px;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .button-list-container {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: row;
+      font-size: 15px;
+      justify-content: space-between;
+    }
+
+    .cancel-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 92px;
+      height: 62px;
+      border: 1px solid rgba(72, 72, 72, 0.4);
+      background-color: #ffffff;
+      border-radius: 24px;
+    }
+
+    .cancel-button-text {
+      color: #484848;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .conform-button {
+      width: 175px;
+      height: 62px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(90deg,
+          rgb(255, 60, 0) 0%,
+          rgb(255, 78, 0) 54.1%,
+          rgb(255, 135, 34) 100%);
+      border-radius: 24px;
+      position: relative;
+    }
+
+
+    .flash-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 22px;
+      transform: translateX(-100%);
+      animation: ani-flash 4s linear infinite;
+    }
+
+    .conform-button-desc-text {
+      font-size: 12px;
+      color: #ffffff;
+      opacity: 0.4;
+      margin-top: 4px;
+    }
+
+    .conform-button-text {
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+
+    .flight-ticket-container {
+      margin-top: 12px;
+      background-color: #ffffff;
+      border-radius: 18px;
+      display: flex;
+      flex-direction: row;
+      padding: 16px;
+      justify-content: center;
+    }
+
+    .ticket-info {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+    }
+
+    .ticket-info-title {
+      font-size: 15px;
+      color: #333333;
+      font-weight: bold;
+    }
+
+    .country-text {
+      margin-top: 10px;
+      color: #666666;
+      font-size: 11px;
+    }
+
+    .ticket-info-title:last-child {
+      text-align: right;
+    }
+
+    .flight-icon-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin: 3px 9px 0 9px;
+    }
+
+    .dot {
+      width: 3px;
+      height: 3px;
+      border-radius: 1.5px;
+      margin: 0 3px;
+      background-color: rgb(255, 135, 34);
+    }
+
+    .flight-icon-img {
+      width: 16px;
+      height: auto;
+    }
+
+    .depart-city-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .location-img {
+      width: 15px;
+      height: auto;
+    }
+
+    .depart-city-name {
+      margin-left: 4px;
+      font-size: 12px;
+      color: #484848;
+    }
+
+    .close-img {
+      width: 30px;
+      height: auto;
+      margin-top: 40px;
+
+    }
+
+    .countdown-container-1 {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .countdown-title {
+      font-size: 12px;
+      color: #000000;
+      opacity: 0.5;
+      margin-right: 10px;
+    }
+
+    .countdown-text {
+      font-size: 14px;
+      color: #000000;
+      opacity: 0.5;
+      margin-top: -3px;
+      margin-left: 2px;
+    }
+
+    .countdown-number {
+      font-size: 10px;
+      color: #484848;
+      margin-left: 2px;
+      padding: 1.5px 3px;
+      background-color: #ffffff;
+      border-radius: 4.5px;
+      font-weight: bold;
+      min-width: 9px;
+      text-align: center;
+    }
+  </style>
+  <style>
+    @keyframes ani-hide {
+      0% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes ani-box-title-show {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes ani-box-show {
+      0% {
+        transform: scale(0.25);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes ani-shake {
+      10% {
+        transform: rotate(15deg);
+      }
+
+      20% {
+        transform: rotate(-10deg);
+      }
+
+      30% {
+        transform: rotate(5deg);
+      }
+
+      40% {
+        transform: rotate(-5deg);
+      }
+
+      50%,
+      100% {
+        transform: rotate(0deg);
+      }
+    }
+
+    @keyframes ani-shrink {
+      0% {
+        transform: scale(1);
+      }
+
+      60% {
+        transform: scale(1.1);
+      }
+
+      90% {
+        transform: scale(0.9);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes ani-box-light {
+      0% {
+        opacity: 0;
+        transform: scale(0.25) rotate(0);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1) rotate(360deg);
+      }
+    }
+
+    @keyframes ani-box-bg {
+      0% {
+        opacity: 0;
+        transform: scale(0.25) rotate(0deg);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1) rotate(360deg);
+      }
+    }
+
+    @keyframes ani-box-content-show {
+      0% {
+        opacity: 0;
+        transform: scaleY(0.5);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scaleY(1);
+      }
+    }
+
+    @keyframes ani-result-show {
+      0% {
+        opacity: 0;
+        transform: scale(0.25) rotateY(0deg);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1) rotateY(360deg);
+      }
+    }
+
+    @keyframes ani-city-move {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(-398%);
+      }
+    }
+
+    @keyframes ani-enlarge {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.4);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes ani-flash {
+      0% {
+        left: 0;
+      }
+
+      75% {
+        left: 0;
+      }
+
+      100% {
+        left: 100%;
+      }
+    }
+  </style>
+  <script>
+    function show() {
+      const domContainer = document.querySelector('#container');
+      domContainer.className = 'show';
+    }
+    function hide() {
+      const domContainer = document.querySelector('#container');
+      domContainer.className = 'hide';
+    }
+  </script>
+</head>
+
+<body>
+  <div id="container" class="hide">
+    <div class="phone-container">
+      <div class="content-container">
+        <div class="open-box-btn" onclick="show()">开盒</div>
+        <div class="modal-container">
+          <div class="absolute-center">
+            <img class="box-bg1-img" src="https://dimg04.c-ctrip.com/images/1ro1y12000gdkm3ca6166.png" />
+          </div>
+          <div class="absolute-center">
+            <img class="box-bg2-img" src="https://dimg04.c-ctrip.com/images/1ro5v12000gdkjqcx8045.png" />
+          </div>
+          <div class="absolute-center">
+            <img class="box-bg3-img" src="https://dimg04.c-ctrip.com/images/1ro2s12000gdjsv0h86DD.png" />
+          </div>
+          <div class="absolute-center">
+            <img class="box-img" src="https://dimg04.c-ctrip.com/images/1ro6312000gdjst7z3178.png" />
+          </div>
+          <div class="absolute-center">
+            <img class="box-title-img" src="https://dimg04.c-ctrip.com/images/1ro3x12000gdjt1184F88.png" />
+          </div>
+          <div class="box-content">
+            <div class="city-list"></div>
+          </div>
+          <div class="result-container">
+            <div class="result-title-container">
+              <div class="countdown-container-1">
+                <div class="countdown-title">兑换倒计时</div>
+                <div class="countdown-number">9</div>
+                <div class="countdown-number">5</div>
+                <div class="countdown-text">:</div>
+                <div class="countdown-number">1</div>
+                <div class="countdown-number">7</div>
+                <div class="countdown-text">:</div>
+                <div class="countdown-number">0</div>
+                <div class="countdown-number">9</div>
+              </div>
+            </div>
+            <div class="result-content-container">
+              <div class="depart-city-container">
+                <img src="https://dimg04.c-ctrip.com/images/1ro0h12000gdjt42dB68C.png" class="location-img" />
+                <div class="depart-city-name">广州出发</div>
+              </div>
+              <div class="flight-ticket-container">
+                <div class="ticket-info">
+                  <div class="ticket-info-title">
+                    广州
+                    <div class="country-text">广东</div>
+                  </div>
+                  <div class="flight-icon-container">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <img src="https://dimg04.c-ctrip.com/images/1ro5o12000gdjscvq1CF6.png" class="flight-icon-img" />
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                  </div>
+                  <div class="ticket-info-title">
+                    伦敦
+                    <div class="country-text">英国</div>
+                  </div>
+                </div>
+              </div>
+              <div class="button-list-container">
+                <div class="cancel-button" >
+                  <div class="cancel-button-text">再想想</div>
+                </div>
+                <div class="conform-button" onclick="hide()">
+                  <div class="conform-button-text">去兑换</div>
+                  <div class="conform-button-desc-text">
+                    机票数量有限 先到先得
+                  </div>
+                  <img src="https://dimg04.c-ctrip.com/images/1ro0b12000gdza42f77BD.png" class="flash-img" />
+                </div>
+              </div>
+            </div>
+            <img src="https://dimg04.c-ctrip.com/images/1ro0b12000ge05v8xB811.png" class="close-img" onclick="hide()" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const list = [
+      {
+        "cityName": "广州",
+        "cityCode": "CAN",
+      },
+      {
+        "cityName": "西安",
+        "cityCode": "SIA",
+      },
+      {
+        "cityName": "上海",
+        "cityCode": "SHA",
+      },
+      {
+        "cityName": "重庆",
+        "cityCode": "CKG",
+      }
+    ];
+    list.push(...list);
+    list.push(...list);
+    list.push(...list);
+
+    const domCityList = document.querySelector('.city-list');
+
+    list.forEach((v, i) => {
+      const { cityCode, cityName } = v;
+      const cityItem = document.createElement("div");
+
+      cityItem.style.animation = i > 1 && i < 18 ? `ani-enlarge 0.5s ease-in-out ${2.6 + (i - 2) * 0.2
+        }s forwards` : '';
+
+      cityItem.innerHTML = `
+          <div class="city-item">
+            <img src="https://pic.c-ctrip.com/flight/fuzzy/${cityCode}/284.jpg" class="city-item-bg-img" />
+            <div class="city-item-content">${cityName}</div>
+          </div>
+        `;
+
+      domCityList.appendChild(cityItem);
+    });
+  </script>
+</body>
+
+</html>
