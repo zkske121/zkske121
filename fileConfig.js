@@ -94,4 +94,8 @@ var fileConfig = [{
     id: 2,
     title: '生成随机密码',
     href: './demos/random_password.html'
+}, {
+    id: 2,
+    title: '抽盲盒动效',
+    href: './demos/blind_box.html'
 }];
